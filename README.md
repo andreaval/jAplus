@@ -43,7 +43,7 @@ Options to run the script
 -------------------------
     $('body').Aplus({
         //popup params
-        popup:{ width: 400, height: 400, scrollbars:0, toolbar:0, left: 0,top: 0 }
+        popup:{ width: 400, height: 400, scrollbars:0, toolbar:0, left: 0,top: 0 },
         //confirm message
         confirm: 'Are you sure you want to open the link?'
     });
