@@ -62,16 +62,16 @@ Supported attributes and values
 Options to run the script
 -------------------------
 
-name _type_ _default value_ Description
+name | type | default value | Description
 
-* win.width _int_ _400_ Window width
-* win.height _int_ _400_ Window height
-* win.scrollbars _int_ _0_ 1=Show scrollbars, 0=Hide scrolllbars
-* win.toolbar _int_ _0_ 1=Show browser toolbar, 0=Hide toolbar
-* win.left _int_ _0_ The left position of the window
-* win.top _int_ _0_ The top position of the window
-* confirm _string_ _'Are you sure you want to open the link?'_ Default confirm message
-* confirmType _string] _''_ _empty_=normal confirm() function, custom=if the confirm function has been overridden
+* win.width | int | 400 | Window width
+* win.height | int | 400 | Window height
+* win.scrollbars | int | 0 | 1=Show scrollbars, 0=Hide scrolllbars
+* win.toolbar | int | 0 | 1=Show browser toolbar, 0=Hide toolbar
+* win.left | int | 0 | The left position of the window
+* win.top | int | 0 | The top position of the window
+* confirm | string | 'Are you sure you want to open the link?' | Default confirm message
+* confirmType | string | '' | _empty_=normal confirm() function, custom=if the confirm function has been overridden
 
 ToDo
 ----
