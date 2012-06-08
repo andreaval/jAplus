@@ -28,6 +28,14 @@ Opens link in a new window or tab:
 
     <a href="index.htm" class="blank"></a>
 
+Opens the link after the user confirms:
+
+    <a href="index.htm" class="confirm" title="confirm your choice?"></a>
+
+Opens the link in a centered window:
+
+    <a href="index.htm" class="win win-center"></a>
+
 
 Supported attributes and values
 -------------------------------
@@ -35,24 +43,57 @@ Supported attributes and values
 * **class** attribute
 	* __blank__ - Opens the linked document in a new window or tab
 	* __confirm__ - Opens the linked document only after user confirmation (It may also be used in conjunction with one of the other values)
-	* __frame__ - Opens the linked document in a named frame (Use the value **frame-**_framename_ to set the frame name)
+	* __frame__ - Opens the linked document in a named frame
+		* __frame-__*framename* - Name of the frame where the link is open
 	* __parent__ - Opens the linked document in the parent frame
-	* __popup__ - Opens the linked document in a new window popup
+	* __win__ - Opens the linked document in a new window popup
+		* __win-center__ - Center window in the page
+		* __win-fullpage__ - Same size of the page
+		* __win-width-__*value* - Window width (in pixels)
+		* __win-height-__*value* - Window height (in pixels)
+		* __win-left-__*value* - The left position of the window (in pixels)
+		* __win-top-__*value* - The top position of the window (in pixels)
+		* __win-scrollbars__ - Show the window scrollbars
+		* __win-toolbar__ - Show the window toolbar
+	* __before-__*functionName* - Invokes the function before opening the link. (If return value===FALSE link does not open)
+
+* **title** attribute
+	* _message_ - text of the confirmation dialog (only used in conjunction with confirm class)
 
 Options to run the script
 -------------------------
-    $('body').Aplus({
-        //popup params
-        popup:{ width: 400, height: 400, scrollbars:0, toolbar:0, left: 0,top: 0 },
-        //confirm message
-        confirm: 'Are you sure you want to open the link?'
-    });
+
+name [type] (default value) Description
+
+* win.width [int] (400) Window width
+* win.height [int] (400) Window height
+* win.scrollbars [int] (0) 1=Show scrollbars, 0=Hide scrolllbars
+* win.toolbar [int] (0) 1=Show browser toolbar, 0=Hide toolbar
+* win.left [int] (0) The left position of the window
+* win.top [int] (0) The top position of the window
+* confirm [string] ('Are you sure you want to open the link?') Default confirm message
+* confirmType [string] ('') _empty_=normal confirm() function, custom=if the confirm function has been overridden
 
 ToDo
 ----
-* customizing of the confirm message using the TITLE attribute
-* add **dialog** to supported values. It opens jqueryUI dialog or blockUI dialog
+* add support for the **dialog** value. It opens jqueryUI dialog or blockUI dialog
 
 Changelog
 ---------
-v **0.1.0** (2012-06-05) - First version
+**0.2.0** (2012-06-08)
+
+* Add support for the **title** attribute in conjuction with class confirm
+* Renamed class **popup** -> **win** 
+* Added value **win-center**
+* Added value **win-fullpage**
+* Added value **win-width-**_value_
+* Added value **win-height-**_value_
+* Added value **win-top-**_value_
+* Added value **win-left-**_value_
+* Added value **win-scrollbars**
+* Added value **win-toolbar**
+* Added value **before-**_value_
+* Added option **confirmType**
+
+**0.1.0** (2012-06-05)
+First version
