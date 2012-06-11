@@ -83,15 +83,15 @@ Changelog
 
 * Add support for the **title** attribute in conjuction with class confirm
 * Renamed class **popup** -> **win** 
-* Added value **win-center**
-* Added value **win-fullpage**
-* Added value **win-width-**_value_
-* Added value **win-height-**_value_
-* Added value **win-top-**_value_
-* Added value **win-left-**_value_
-* Added value **win-scrollbars**
-* Added value **win-toolbar**
-* Added value **before-**_value_
+* Added class **win-center**
+* Added class **win-fullpage**
+* Added class **win-width-**_value_
+* Added class **win-height-**_value_
+* Added class **win-top-**_value_
+* Added class **win-left-**_value_
+* Added class **win-scrollbars**
+* Added class **win-toolbar**
+* Added class **before-**_value_
 * Added option **confirmType**
 
 **0.1.0** (2012-06-05)
