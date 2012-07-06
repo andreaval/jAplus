@@ -10,6 +10,10 @@ This plugin requires jQuery 1.2.3 and above to work. It has been tested on Inter
 
 Dual licensed under the MIT and GPL licenses.
 
+Website
+-----------------------
+http://japlus.simplit.it
+
 Installation
 ------------
 Include script after the jQuery library:
@@ -22,77 +26,39 @@ Run the script:
        $('body').Aplus();
     });
 
-Example
--------
-Opens link in a new window or tab:
-
-    <a href="index.htm" class="blank"></a>
-
-Opens the link after the user confirms:
-
-    <a href="index.htm" class="confirm" title="confirm your choice?"></a>
-
-Opens the link in a centered window:
-
-    <a href="index.htm" class="win win-center"></a>
-
-Supported attributes and values
--------------------------------
-
-* **class** attribute
-	* __blank__ - Opens the linked document in a new window or tab
-	* __confirm__ - Opens the linked document only after user confirmation (It may also be used in conjunction with one of the other values)
-	* __frame__ - Opens the linked document in a named frame
-		* __frame-__*framename* - Name of the frame where the link is open
-	* __parent__ - Opens the linked document in the parent frame
-	* __win__ - Opens the linked document in a new window popup
-		* __win-center__ - Center window in the page
-		* __win-fullpage__ - Same size of the page
-		* __win-width-__*value* - Window width (in pixels)
-		* __win-height-__*value* - Window height (in pixels)
-		* __win-left-__*value* - The left position of the window (in pixels)
-		* __win-top-__*value* - The top position of the window (in pixels)
-		* __win-scrollbars__ - Show the window scrollbars
-		* __win-toolbar__ - Show the window toolbar
-	* __before-__*functionName* - Invokes the function before opening the link. (If return value===FALSE link does not open)
-
-* **title** attribute
-	* _message_ - text of the confirmation dialog (only used in conjunction with confirm class)
-
-Options to run the script
--------------------------
-
-name | type | default value | Description
-
-* win.width | int | 400 | Window width
-* win.height | int | 400 | Window height
-* win.scrollbars | int | 0 | 1=Show scrollbars, 0=Hide scrolllbars
-* win.toolbar | int | 0 | 1=Show browser toolbar, 0=Hide toolbar
-* win.left | int | 0 | The left position of the window
-* win.top | int | 0 | The top position of the window
-* confirm | string | 'Are you sure you want to open the link?' | Default confirm message
-* confirmType | string | '' | _empty_=normal confirm() function, custom=if the confirm function has been overridden
-
-ToDo
-----
-* add support for the **dialog** value. It opens jqueryUI dialog or blockUI dialog
-
 Changelog
 ---------
+**0.3.0** (2012-07-06)
+
+* Add class **before-**_functionName_
+* Add class **confirm-mask-**_element_id_
+* Add class **dialog** 
+* Add class **dialog-ajax**
+* Add class **dialog-full**
+* Add class **dialog-modal**
+* Add class **dialog-w-**_value_
+* Add class **dialog-h-**_value_
+* Add class **dialog-l-**_value_
+* Add class **dialog-t-**_value_
+* Add class **dialog-**_option-value_
+* Add support for the **title** attribute in conjuction with class dialog
+* Add support to percent values for **win-width-** and **win-height-** classes
+* Add mask support
+
 **0.2.0** (2012-06-08)
 
 * Add support for the **title** attribute in conjuction with class confirm
-* Renamed class **popup** -> **win** 
-* Added class **win-center**
-* Added class **win-fullpage**
-* Added class **win-width-**_value_
-* Added class **win-height-**_value_
-* Added class **win-top-**_value_
-* Added class **win-left-**_value_
-* Added class **win-scrollbars**
-* Added class **win-toolbar**
-* Added class **before-**_value_
-* Added option **confirmType**
+* Rename class **popup** -> **win** 
+* Add class **win-center**
+* Add class **win-fullpage**
+* Add class **win-width-**_value_
+* Add class **win-height-**_value_
+* Add class **win-top-**_value_
+* Add class **win-left-**_value_
+* Add class **win-scrollbars**
+* Add class **win-toolbar**
+* Add class **before-**_value_
+* Add option **confirmType**
 
 **0.1.0** (2012-06-05)
 First version
