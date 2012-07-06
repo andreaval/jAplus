@@ -14,18 +14,6 @@ Website
 -----------------------
 http://japlus.simplit.it
 
-Installation
-------------
-Include script after the jQuery library:
-     
-    <script src="/path/to/jquery.Aplus.js"></script>
-
-Run the script:
-    
-    $(function(){
-       $('body').Aplus();
-    });
-
 Changelog
 ---------
 **0.3.0** (2012-07-06)
