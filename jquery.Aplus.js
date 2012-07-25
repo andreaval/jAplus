@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (jAplus) plugin
- * Version 0.3.0
+ * Version 0.4.0b1
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -15,14 +15,16 @@
     $.fn.Aplus = function(options){
 
         var settings = $.extend({
+            prefix: '',
             win: {width:400,height:400,scrollbars:0,toolbar:0},
             confirm: 'Are you sure you want to open the link?',
             confirmType: false
         },options);
 
         var elements=(this.is('a')) ? this : this.find('a[class]');
+        var x=settings.prefix;
         
-        elements.filter('.confirm[title],.dialog[title]').each(function(){
+        elements.filter('.'+x+'confirm[title],.'+x+'dialog[title]').each(function(){
             var e=$(this);
             e.data('title',e.attr('title'));
             e.removeAttr('title');
@@ -30,7 +32,7 @@
 
         elements.unbind('click').click(function(e){
             var a=$(this);
-            var before=a.classPre('before');
+            var before=a.classPre(x+'before');
             if(before){
                 if($.isFunction(eval(before))){
                     if(window[before](a)===false) return false;
@@ -40,9 +42,9 @@
                     return false;
                 }
             }
-            if(a.hasClass('confirm')){
+            if(a.hasClass(x+'confirm')){
                 var msg=settings.confirm;
-                var mask=a.classPre('confirm-mask');
+                var mask=a.classPre(x+'confirm-mask');
                 if(!mask){
                     if(a.attr('href').charAt(0)=='#') mask=a.attr('href');
                     else if(a.data('title') && a.data('title').charAt(0)=='#'){
@@ -90,25 +92,25 @@
                     default: if(!confirm(msg)) return false;
                 }
             }
-            if(a.hasClass('blank')){
+            if(a.hasClass(x+'blank')){
                 a.attr('target','_blank');
                 return true;
             }
-            if(a.hasClass('parent')){
+            if(a.hasClass(x+'parent')){
                 a.attr('target','_parent');
                 return true;
             }
-            if(a.hasClass('frame')){
+            if(a.hasClass(x+'frame')){
                 a.attr('target',a.classPre('frame'));
                 return true;
             }
-            if(a.hasClass('dialog')){
+            if(a.hasClass(x+'dialog')){
             	if(jQuery.ui){
-                    var options=a.classPre('dialog',1);
+                    var options=a.classPre(x+'dialog',1);
                     var url=a.attr('href');
                     if(url.toString().charAt(0)!='#'){
                         var frame;
-                        if(a.hasClass('dialog-ajax')){
+                        if(a.hasClass(x+'dialog-ajax')){
                             frame=$('<div></div>');
                             frame.load(url);
                         }
@@ -131,7 +133,7 @@
                     
                     var wP=$(window).width();
                     var hP=$(window).height();
-                    if(a.hasClass('dialog-full')){
+                    if(a.hasClass(x+'dialog-full')){
                         options.width=wP-15;
                         options.height=hP;
                         options.position = [3,3];
@@ -161,13 +163,13 @@
             	else alert('class dialog required jqueryUI');
             	return false;
             }
-            else if(a.hasClass('win')){
+            else if(a.hasClass(x+'win')){
                 e.preventDefault();
                 var options='';
-                var aSett=$.extend({},settings.win,a.classPre('win',1));
+                var aSett=$.extend({},settings.win,a.classPre(x+'win',1));
                 var wP=$(window).width();
                 var hP=$(window).height();
-                if(a.hasClass('win-fullpage')){
+                if(a.hasClass(x+'win-fullpage')){
                     aSett.width=wP;
                     aSett.height=hP;
                     delete aSett.fullpage;
@@ -184,7 +186,7 @@
                     aSett.width=Math.min(w,wP);
                     aSett.height=Math.min(h,hP);
                 }
-                if(a.hasClass('win-center')){
+                if(a.hasClass(x+'win-center')){
                     aSett.left = (wP/2)-(aSett.width/2);
                     aSett.top = (hP/2)-(aSett.height/2);
                     delete aSett.center;
