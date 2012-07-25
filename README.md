@@ -6,10 +6,6 @@ jQuery A+
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
 The script syntax is compatible with all HTML / XHTML standards (HTML 4.01, XHTML 1.0, HTML 5, etc.)
 
-This plugin requires jQuery 1.2.3 and above to work. It has been tested on Internet Explorer 6/7/8, Firefox, Safari, Opera, and Chrome.
-
-Dual licensed under the MIT and GPL licenses.
-
 Website
 -----------------------
 http://japlus.simplit.it
