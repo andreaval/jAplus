@@ -19,13 +19,14 @@
             prefix: '',
             win: {width:400,height:400,scrollbars:0,toolbar:0},
             confirm: 'Are you sure you want to open the link?',
-            confirmType: false
+            confirmType: false,
+            disabledMsg: 'alert'
         },options);
 
         var elements=(this.is('a')) ? this : this.find('a[class]');
         var x=settings.prefix;
         
-        elements.filter('.'+x+'confirm[title],.'+x+'dialog[title]').each(function(){
+        elements.filter('.'+x+'confirm[title],.'+x+'dialog[title],a.'+x+'disabled[title]').each(function(){
             var e=$(this);
             e.data('title',e.attr('title'));
             e.removeAttr('title');
@@ -33,7 +34,10 @@
 
         elements.unbind('click').click(function(e){
             var a=$(this);
-            if(a.hasClass(x+'disabled')) return false;
+            if(a.hasClass(x+'disabled')){
+               if(a.data('title') && settings.disabledMsg=='alert') alert(a.data('title'));
+               return false; 
+            } 
             var before=a.classPre(x+'before');
             if(before){
                 if($.isFunction(eval(before))){
@@ -198,6 +202,10 @@
                 });
                 options=options.substr(1);
                 window.open(a.attr('href'),'win',options);
+                return false;
+            }
+            if(a.hasClass(x+'print')){
+                window.setTimeout(window.print,0);
                 return false;
             }
             return true;
