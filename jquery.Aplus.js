@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (jAplus) plugin
- * Version 0.4.0rc2
+ * Version 0.4.0
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 ;(function($, undefined) {
     
-    $.Aplus_version = '0.4.0rc2';
+    $.Aplus_version = '0.4.0';
     $.fn.Aplus = function(options){
 
         var settings = $.extend({

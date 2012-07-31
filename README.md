@@ -12,37 +12,47 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+**0.4.0** (2012-07-31)
+
+* Added support for the prefixes
+* Added class **disabled**
+* Added class **print**
+* Added class **scroll**
+* Added option **disabledMsg**
+* Added option **scroll.speed**
+* Added option **scroll.offsetY**
+
 **0.3.0** (2012-07-06)
 
-* Add class **before-**_functionName_
-* Add class **confirm-mask-**_element_id_
-* Add class **dialog** 
-* Add class **dialog-ajax**
-* Add class **dialog-full**
-* Add class **dialog-modal**
-* Add class **dialog-w-**_value_
-* Add class **dialog-h-**_value_
-* Add class **dialog-l-**_value_
-* Add class **dialog-t-**_value_
-* Add class **dialog-**_option-value_
-* Add support for the **title** attribute in conjuction with class dialog
-* Add support to percent values for **win-width-** and **win-height-** classes
-* Add mask support
+* Added class **before-**_functionName_
+* Added class **confirm-mask-**_element_id_
+* Added class **dialog** 
+* Added class **dialog-ajax**
+* Added class **dialog-full**
+* Added class **dialog-modal**
+* Added class **dialog-w-**_value_
+* Added class **dialog-h-**_value_
+* Added class **dialog-l-**_value_
+* Added class **dialog-t-**_value_
+* Added class **dialog-**_option-value_
+* Added support for the **title** attribute in conjuction with class dialog
+* Added support to percent values for **win-width-** and **win-height-** classes
+* Added mask support
 
 **0.2.0** (2012-06-08)
 
-* Add support for the **title** attribute in conjuction with class confirm
-* Rename class **popup** -> **win** 
-* Add class **win-center**
-* Add class **win-fullpage**
-* Add class **win-width-**_value_
-* Add class **win-height-**_value_
-* Add class **win-top-**_value_
-* Add class **win-left-**_value_
-* Add class **win-scrollbars**
-* Add class **win-toolbar**
-* Add class **before-**_value_
-* Add option **confirmType**
+* Added support for the **title** attribute in conjuction with class confirm
+* Added class **win-center**
+* Added class **win-fullpage**
+* Added class **win-width-**_value_
+* Added class **win-height-**_value_
+* Added class **win-top-**_value_
+* Added class **win-left-**_value_
+* Added class **win-scrollbars**
+* Added class **win-toolbar**
+* Added class **before-**_value_
+* Added option **confirmType**
+* Renamed class **popup** -> **win** 
 
 **0.1.0** (2012-06-05)
 First version
