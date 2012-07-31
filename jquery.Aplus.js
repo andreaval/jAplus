@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (jAplus) plugin
- * Version 0.4.0rc1
+ * Version 0.4.0rc2
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 ;(function($, undefined) {
     
-    $.Aplus_version = '0.4.0rc1';
+    $.Aplus_version = '0.4.0rc2';
     $.fn.Aplus = function(options){
 
         var settings = $.extend({
@@ -20,7 +20,8 @@
             win: {width:400,height:400,scrollbars:0,toolbar:0},
             confirm: 'Are you sure you want to open the link?',
             confirmType: false,
-            disabledMsg: 'alert'
+            disabledMsg: 'alert',
+            scroll: {speed:300,offsetY:0}
         },options);
 
         var elements=(this.is('a')) ? this : this.find('a[class]');
@@ -52,8 +53,8 @@
                 var msg=settings.confirm;
                 var mask=a.classPre(x+'confirm-mask');
                 if(!mask){
-                    if(a.attr('href').charAt(0)=='#') mask=a.attr('href');
-                    else if(a.data('title') && a.data('title').charAt(0)=='#'){
+                    if(IsAnchor(a.attr('href'))) mask=a.attr('href');
+                    else if(a.data('title') && IsAnchor(a.data('title'))){
                         mask=a.data('title');
                     } 
                 }
@@ -114,7 +115,7 @@
             	if(jQuery.ui){
                     var options=a.classPre(x+'dialog',1);
                     var url=a.attr('href');
-                    if(url.toString().charAt(0)!='#'){
+                    if(IsAnchor(url)){
                         var frame;
                         if(a.hasClass(x+'dialog-ajax')){
                             frame=$('<div></div>');
@@ -204,6 +205,11 @@
                 window.open(a.attr('href'),'win',options);
                 return false;
             }
+            if(a.hasClass(x+'scroll') && IsAnchor(a.attr('href'))){
+                var scroll=$.extend({},settings.scroll,a.classPre(x+'scroll',1));
+                $('html,body').animate({scrollTop:$(a.attr('href')).offset().top+scroll.offsetY},scroll.speed);
+                return false;
+            }
             if(a.hasClass(x+'print')){
                 window.setTimeout(window.print,0);
                 return false;
@@ -237,4 +243,7 @@
     function IsNumeric(input){
         return (input - 0) == input && input.length > 0;
     };
+    function IsAnchor(url){
+        return (url.toString().charAt(0)=='#') ? true : false;
+    }
 })(jQuery);
