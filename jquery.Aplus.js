@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (jAplus) plugin
- * Version 0.4.0
+ * Version 0.4.1
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 ;(function($, undefined) {
     
-    $.Aplus_version = '0.4.0';
+    $.Aplus_version = '0.4.1';
     $.fn.Aplus = function(options){
 
         var settings = $.extend({
@@ -115,7 +115,7 @@
             	if(jQuery.ui){
                     var options=a.classPre(x+'dialog',1);
                     var url=a.attr('href');
-                    if(IsAnchor(url)){
+                    if(!IsAnchor(url)){
                         var frame;
                         if(a.hasClass(x+'dialog-ajax')){
                             frame=$('<div></div>');

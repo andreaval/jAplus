@@ -12,6 +12,10 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+**0.4.1** (2012-08-10)
+
+* Fix bug: dialog class don't works
+
 **0.4.0** (2012-07-31)
 
 * Added support for the prefixes
