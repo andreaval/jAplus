@@ -12,6 +12,10 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+**0.4.2** (2012-09-21)
+
+* Fix bug: classes 'confirm blank' in conjuction with customType option don't work
+
 **0.4.1** (2012-08-10)
 
 * Fix bug: dialog class don't works

@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (jAplus) plugin
- * Version 0.4.1
+ * Version 0.4.2
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 ;(function($, undefined) {
     
-    $.Aplus_version = '0.4.1';
+    $.Aplus_version = '0.4.2';
     $.fn.Aplus = function(options){
 
         var settings = $.extend({
@@ -49,6 +49,10 @@
                     return false;
                 }
             }
+            if(a.hasClass(x+'blank')) a.attr('target','_blank');
+            else if(a.hasClass(x+'parent')) a.attr('target','_parent');
+            else if(a.hasClass(x+'frame')) a.attr('target',a.classPre('frame'));
+            else a.attr('target','_self'); 
             if(a.hasClass(x+'confirm')){
                 var msg=settings.confirm;
                 var mask=a.classPre(x+'confirm-mask');
@@ -69,47 +73,36 @@
                 }
                 else if(a.data('title')) msg=a.data('title');
                 
-                switch(settings.confirmType){
-                    case 'dialog': $("<div></div>").html(msg).dialog({   
-                                        modal:true,
-                                        resizable:false,
-                                        buttons:{
-                                            Ok:function(){
-                                                if($(this).children('form').length==0){
-                                                    $(this).wrapInner('<form action="'+a.attr('href')+'" method="get"></form>');
-                                                }
-                                                $(this).dialog("close");
-                                                $(this).children('form').submit();
-                                            },
-                                            Cancel:function(){
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                    return false;
-                    break;
-                    case 'custom': confirm(msg,function(){
-                                        if($(msg).is('form') && $(msg).attr('id')){
-                                            $('#'+$(msg).attr('id')).submit();
-                                        }
-                                        else window.location = a.attr('href');
-                                });
-                                return false;
-                    break;
-                    default: if(!confirm(msg)) return false;
-                }
-            }
-            if(a.hasClass(x+'blank')){
-                a.attr('target','_blank');
-                return true;
-            }
-            if(a.hasClass(x+'parent')){
-                a.attr('target','_parent');
-                return true;
-            }
-            if(a.hasClass(x+'frame')){
-                a.attr('target',a.classPre('frame'));
-                return true;
+                if(settings.confirmType!=false){
+	                switch(settings.confirmType){
+	                    case 'dialog': $("<div></div>").html(msg).dialog({   
+	                                        modal:true,
+	                                        resizable:false,
+	                                        buttons:{
+	                                            Ok:function(){
+	                                                if($(this).children('form').length==0){
+	                                                    window.open(a.attr('href'),a.attr('target'));
+	                                                }
+	                                                else $(this).children('form').submit();
+	                                                $(this).dialog("close");
+	                                            },
+	                                            Cancel:function(){
+	                                                $(this).dialog("close");
+	                                            }
+	                                        }
+	                                    });
+	                                    return false;
+	                    break;
+	                    default: eval('var f='+settings.confirmType);
+                                     f.call(a,msg,function(){
+                                     if($(mask+' form').length) $('form',this).submit();
+                                     else window.open(a.attr('href'),a.attr('target'));
+                                 });
+                                 return false;    
+	                 }   
+                 }
+                 else if(!confirm(msg)) return false;
+
             }
             if(a.hasClass(x+'dialog')){
             	if(jQuery.ui){
