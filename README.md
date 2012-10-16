@@ -12,6 +12,16 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+**0.5.0** (2012-10-16)
+
+* Mod: improved performance
+* Added class **self**
+* Added class **notify**
+* Added class **notify-life**
+* Added class **notify-type**
+* Added option **notify.life**
+* Added option **notify.type**
+
 **0.4.2** (2012-09-21)
 
 * Fix bug: classes 'confirm blank' in conjuction with customType option don't work
