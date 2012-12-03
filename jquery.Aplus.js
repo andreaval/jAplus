@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (Aplus) plugin
- * Version 0.5.0
+ * Version 0.5.1
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 ;(function($, undefined) {
     
-    $.Aplus_version = '0.5.0';
+    $.Aplus_version = '0.5.1';
     $.fn.Aplus = function(options){
 
         var settings = $.extend({
@@ -42,6 +42,10 @@
                if(a.data('title') && settings.disabledMsg=='alert') alert(a.data('title'));
                return false; 
             }
+            if(a.hasClass(x+'print')){
+                window.setTimeout(window.print,0);
+                return false;
+            }
             if(a.classPre(x+'before')){
                 var before=a.classPre(x+'before');
                 if($.isFunction(eval(before))){
@@ -52,6 +56,7 @@
                     return false;
                 }
             }
+            if(!a.is('[href]')) return;
             var url=a.attr('href');
             var confirmed=a.data('confirmed');
             if(confirmed) a.data('confirmed',false);
@@ -228,10 +233,6 @@
                         default: alert(response);
                     }
                 });
-                return false;
-            }
-            else if(a.hasClass(x+'print')){
-                window.setTimeout(window.print,0);
                 return false;
             }
             else if(!IsAnchor(url)){

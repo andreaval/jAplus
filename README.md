@@ -12,6 +12,10 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+**0.5.1** (2012-12-03)
+
+* Fix bug: A tag without href generates a script error
+
 **0.5.0** (2012-10-16)
 
 * Mod: improved performance
