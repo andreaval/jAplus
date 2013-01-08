@@ -1,0 +1,26 @@
+{
+  "name": "jAplus",
+  "title": "jQuery A+",
+  "description": "jQuery plugin to improve the HTML <a> tag",
+  "version": "0.5.1",
+  "main": "./jquery.Aplus.js",
+  "dependencies": {
+    "jquery": ">= 1.3.2"
+  },
+  "homepage": "http://japlus.simplit.it",
+  "author": {
+      "name" : "Andrea Vallorani",
+      "email" : "andrea.vallorani@gmail.com"
+  },
+  "repository": {
+      "type" : "git",
+      "url" : "git://github.com/andreaval/jAplus.git"
+  },
+  "bugs": {
+      "url" : "https://github.com/andreaval/jAplus/issues"
+  },
+  "licenses": [
+      "http://www.opensource.org/licenses/mit-license.php",
+      "http://www.gnu.org/licenses/gpl.html"
+  ]
+}
