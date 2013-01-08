@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (Aplus) plugin
- * Version 0.5.1
+ * Version 0.6.0pre
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -10,11 +10,11 @@
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  */
-;(function($, undefined) {
-    
-    $.Aplus_version = '0.5.1';
+(function($) {
+    "use strict";
+    $.Aplus_version = '0.6.0pre';
     $.fn.Aplus = function(options){
-
+        //console.time('Aplus loading');
         var settings = $.extend({
             prefix: '',
             win: {width:400,height:400,scrollbars:0,toolbar:0},
@@ -22,21 +22,21 @@
             confirmType: false,
             disabledMsg: 'alert',
             scroll: {speed:300,offsetY:0},
-            notify: {life:10,type:null}
+            notify: {life:10,type:null},
+            dialog: {}
         },options);
         
         var x=settings.prefix;
         var elements=(this.is('a')) ? this : this.find('a[class]');
-
+        
         elements.filter('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled').each(function(){
-            var e=$(this);
-            if(e.is('[title]')){
-                e.data('title',e.attr('title'));
-                e.removeAttr('title');
+            if($(this).is('[title]')){
+                var e=$(this);
+                e.data('title',e.attr('title')).removeAttr('title');
             }
         });
 
-        elements.click(function(e){
+        function Aplus_parser(e){
             var a=$(this);
             if(a.hasClass(x+'disabled')){
                if(a.data('title') && settings.disabledMsg=='alert') alert(a.data('title'));
@@ -102,7 +102,8 @@
                             });
                         break;
                         default:
-                            eval('var f='+settings.confirmType);
+                            var f=null;
+                            eval('f='+settings.confirmType);
                             f.call(a,msg,function(){
                                  if($(mask+' form').length) $('form',this).submit();
                                  else a.data('confirmed',true).click();
@@ -114,7 +115,7 @@
             }
             if(a.hasClass(x+'dialog')){
             	if(jQuery.ui){
-                    var options=a.classPre(x+'dialog',1);
+                    var options=$.extend({},settings.dialog,a.classPre(x+'dialog',1));
                     if(!IsAnchor(url)){
                         var frame;
                         if(a.hasClass(x+'dialog-ajax')){
@@ -167,7 +168,7 @@
                     }
                     url.dialog(options);
             	}
-            	else alert('class dialog required jqueryUI');
+            	else alert('jqueryUI required!');
             	return false;
             }
             else if(a.hasClass(x+'win')){
@@ -242,11 +243,13 @@
                 else if(a.hasClass(x+'frame')) target=a.classPre('frame');
                 else if(a.hasClass(x+'self') || confirmed) target='_self';
                 if(target){
-                    window.open(url,target); 
+                    window.open(url,target);
                     return false;
                 } 
             }
-        });
+        };
+        elements.unbind('click',$.fn.Aplus.Aplus_parser).click(Aplus_parser);
+        //console.timeEnd('Aplus loading');
     };
     $.fn.classPre = function(prefix,all){
         var classes=this.attr('class').split(' ');
