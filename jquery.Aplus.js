@@ -4,7 +4,7 @@
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
- * Copyright (c) 2012 Andrea Vallorani
+ * Copyright (c) 2012-2013 Andrea Vallorani
  * Source repository: https://github.com/andreaval/jAplus
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
@@ -141,7 +141,7 @@
                     
                     var wP=$(window).width();
                     var hP=$(window).height();
-                    if(a.hasClass(x+'dialog-full')){
+                    if(options.full){
                         options.width=wP-15;
                         options.height=hP;
                         options.position = [3,3];
@@ -177,10 +177,15 @@
                 var aSett=$.extend({},settings.win,a.classPre(x+'win',1));
                 var wP=$(window).width();
                 var hP=$(window).height();
-                if(a.hasClass(x+'win-fullpage')){
+                if(aSett.fullpage){
                     aSett.width=wP;
                     aSett.height=hP;
                     delete aSett.fullpage;
+                }
+                else if(aSett.fullscreen){
+                    aSett.width=screen.width;
+                    aSett.height=screen.height;
+                    delete aSett.fullscreen;
                 }
                 else{
                     var w=aSett.width;
@@ -193,11 +198,11 @@
                     }
                     aSett.width=Math.min(w,wP);
                     aSett.height=Math.min(h,hP);
-                }
-                if(a.hasClass(x+'win-center')){
-                    aSett.left = (wP/2)-(aSett.width/2);
-                    aSett.top = (hP/2)-(aSett.height/2);
-                    delete aSett.center;
+                    if(aSett.center){
+                        aSett.left = (wP/2)-(aSett.width/2);
+                        aSett.top = (hP/2)-(aSett.height/2);
+                        delete aSett.center;
+                    }
                 }
                 $.each(aSett,function(i,v){
                     options+=','+i+'='+v;
