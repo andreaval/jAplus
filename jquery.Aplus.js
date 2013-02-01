@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ (Aplus) plugin
- * Version 0.6.0pre
+ * Version 0.6.0
  * @requires jQuery v1.3.2 or later
  *
  * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
@@ -12,7 +12,7 @@
  */
 (function($) {
     "use strict";
-    $.Aplus_version = '0.6.0pre';
+    $.Aplus_version = '0.6.0';
     $.fn.Aplus = function(options){
         //console.time('Aplus loading');
         var settings = $.extend({
