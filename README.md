@@ -1,3 +1,7 @@
+
+
+#the project is no longer active as it has been incorporated into the [HTMLplus project] (https://github.com/andreaval/HTMLplus)
+
 jQuery A+
 =========
 
