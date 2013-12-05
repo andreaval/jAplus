@@ -1,21 +1,20 @@
 /*!
- * JQuery A+ (Aplus) plugin
- * Version 0.6.0
- * @requires jQuery v1.3.2 or later
+ * JQuery A+ plugin
+ * Version 1.0.0b1
+ * @requires jQuery v1.5.0 or later
  *
- * Developed and maintanined by andreaval, andrea.vallorani@gmail.com
- * Copyright (c) 2012-2013 Andrea Vallorani
- * Source repository: https://github.com/andreaval/jAplus
- * Dual licensed under the MIT and GPL licenses:
- * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
+ * Copyright (c) 2012-2013 Andrea Vallorani, andrea.vallorani@gmail.com
+ * Released under the MIT license
  */
 (function($) {
-    "use strict";
-    $.Aplus_version = '0.6.0';
+    /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, browser:true, devel:true, jquery:true, indent:4*/
     $.fn.Aplus = function(options){
         //console.time('Aplus loading');
-        var settings = $.extend({
+        var nodes=(this.is('a[class]')) ? this : this.find('a[class]');
+        var IsAnchor = function(url){
+            return (url.toString().charAt(0)==='#') ? true : false;
+        };
+        options = $.extend(true,{
             prefix: '',
             win: {width:400,height:400,scrollbars:0,toolbar:0},
             confirm: 'Are you sure you want to open the link?',
@@ -23,45 +22,35 @@
             disabledMsg: 'alert',
             scroll: {speed:300,offsetY:0},
             notify: {life:10,type:null},
-            dialog: {}
+            dialog: {dialogClass:'htmlplus-dialog'},
+            ajax: {loadMsg:'<img src="loader.gif" />'},
+            menu: {pos:'bottom',closeOnClick:true,offset:3}
         },options);
-        
-        var x=settings.prefix;
-        var elements=(this.is('a')) ? this : this.find('a[class]');
-        
-        elements.filter('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled').each(function(){
+        var x=options.prefix;
+
+        nodes.filter('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled').each(function(){
             if($(this).is('[title]')){
                 var e=$(this);
                 e.data('title',e.attr('title')).removeAttr('title');
             }
         });
 
-        function Aplus_parser(e){
+        function parser(e){
             var a=$(this);
             if(a.hasClass(x+'disabled')){
-               if(a.data('title') && settings.disabledMsg=='alert') alert(a.data('title'));
-               return false; 
+                if(a.data('title') && options.disabledMsg==='alert') alert(a.data('title'));
+                return false; 
             }
             if(a.hasClass(x+'print')){
                 window.setTimeout(window.print,0);
                 return false;
-            }
-            if(a.classPre(x+'before')){
-                var before=a.classPre(x+'before');
-                if($.isFunction(eval(before))){
-                    if(window[before](a)===false) return false;
-                }
-                else{
-                    alert('function "'+before+'" not found!');
-                    return false;
-                }
             }
             if(!a.is('[href]')) return;
             var url=a.attr('href');
             var confirmed=a.data('confirmed');
             if(confirmed) a.data('confirmed',false);
             else if(a.hasClass(x+'confirm')){
-                var msg=settings.confirm;
+                var msg=options.confirm;
                 var mask=a.classPre(x+'confirm-mask');
                 if(!mask){
                     if(IsAnchor(url)) mask=url;
@@ -73,49 +62,73 @@
                 if(mask && $(mask).length){
                     msg=$(mask).html();
                     if(a.data('title')){
-                       msg=msg.replace(/\[title\]/g,a.data('title'));
+                        msg=msg.replace(/\[title\]/g,a.data('title'));
                     }
                     msg=msg.replace(/\[href]/g,url);
                     msg=msg.replace(/\[text]/g,a.text());
                 }
                 else if(a.data('title')) msg=a.data('title');
-                
-                if(settings.confirmType!=false){
-                    switch(settings.confirmType){
-                        case 'dialog':
-                            if(!jQuery.ui) return false;
-                            $("<div/>").html(msg).dialog({
-                                modal:true,
-                                resizable:false,
-                                buttons:{
-                                    Ok:function(){
-                                        if($(this).children('form').length==0){
-                                            a.data('confirmed',true).click();
-                                        }
-                                        else $(this).children('form').submit();
-                                        $(this).dialog("close");
-                                    },
-                                    Cancel:function(){
-                                        $(this).dialog("close");
+
+                if(options.confirmType!==false){
+                    switch(options.confirmType){
+                    case 'dialog':
+                        if(!jQuery.ui) return false;
+                        $("<div/>").html(msg).dialog({
+                            modal:true,
+                            resizable:false,
+                            dialogClass:'htmlplus-dialog',
+                            buttons:{
+                                Ok:function(){
+                                    if($(this).children('form').length===0){
+                                        a.data('confirmed',true).click();
                                     }
+                                    else $(this).children('form').submit();
+                                    $(this).dialog("close");
+                                },
+                                Cancel:function(){
+                                    $(this).dialog("close");
                                 }
-                            });
+                            }
+                        });
                         break;
-                        default:
-                            var f=null;
-                            eval('f='+settings.confirmType);
-                            f.call(a,msg,function(){
-                                 if($(mask+' form').length) $('form',this).submit();
+                    default:
+                        if(typeof options.confirmType==='function'){
+                            options.confirmType(a,msg,function(){
+                                if($(mask+' form').length) $('form',this).submit();
                                  else a.data('confirmed',true).click();
                             });
-                     }
-                 }
-                 else if(confirm(msg)) return a.data('confirmed',true).triggerHandler('click');
-                 return false;
+                        }
+                    }
+                }
+                else if(confirm(msg)) return a.data('confirmed',true).triggerHandler('click');
+                return false;
             }
-            if(a.hasClass(x+'dialog')){
-            	if(jQuery.ui){
-                    var options=$.extend({},settings.dialog,a.classPre(x+'dialog',1));
+            if(a.hasClass('ajax')){
+                var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
+                var aId = (typeof(a.attr('id'))==='undefined') ? a.text() : a.attr('id');
+                ajaxSett.to = (ajaxSett.to===null) ? 'body' : '#'+ajaxSett.to;
+                if(typeof(ajaxSett.from)==='undefined' || ajaxSett.from===null) ajaxSett.from=ajaxSett.to;
+                var to=$(ajaxSett.to);
+                var localCache=to.children('div[data-rel="'+aId+'"]');
+                var toH=to.height();
+                to.children().hide();
+                if(localCache.length){
+                    localCache.show();
+                }
+                else{
+                    var container=$('<div data-rel="'+aId+'" />');
+                    container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                    $.ajax({url:url,dataType:'html'}).done(function(data){
+                        data = '<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>';
+                        if(ajaxSett.to==='body') container.html($(data).html());
+                        else container.html($(data).find(ajaxSett.from).html());
+                    });
+                }
+                return false;
+            }
+            else if(a.hasClass(x+'dialog')){
+                if(jQuery.ui){
+                    var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
                     if(!IsAnchor(url)){
                         var frame;
                         if(a.hasClass(x+'dialog-ajax')){
@@ -124,62 +137,66 @@
                         }
                         else{
                             frame=$('<iframe src="'+url+'" style="padding:0;"></iframe>');
-                            options.open=function(e,ui){
+                            dSett.open=function(){
                                 frame.css('width',$(this).parent().width());
                             };
                         }
-                        options.dragStart=options.resizeStart=function(e,ui){
+                        dSett.dragStart=dSett.resizeStart=function(){
                             frame.hide();
                         };
-                        options.dragStop=options.resizeStop=function(e,ui){
+                        dSett.dragStop=dSett.resizeStop=function(){
                             frame.show();
                         };
                         url=frame;
                     }
                     else url=$(url);
-                    if(a.data('title')) options.title=a.data('title');
-                    
+                    if(a.data('title')) dSett.title=a.data('title');
+
                     var wP=$(window).width();
                     var hP=$(window).height();
-                    if(options.full){
-                        options.width=wP-15;
-                        options.height=hP;
-                        options.position = [3,3];
-                        if(options.draggable==undefined) options.draggable=false;
+                    if(dSett.full){
+                        dSett.width=wP-15;
+                        dSett.height=hP;
+                        dSett.position = [3,3];
+                        if(typeof dSett.draggable==='undefined') dSett.draggable=false;
                     }
                     else{
-                        if(options.w) options.width = options.w;
-                        if(options.h) options.height = options.h;
-                        if(options.l && options.t) options.position = [options.l,options.t];
-                        if(options.width){
-                            var w=options.width;
-                            if(w.toString().charAt(w.length-1)=='p'){
-                                w=parseInt(w)*(wP/100);
+                        if(dSett.w) dSett.width = dSett.w;
+                        if(dSett.h) dSett.height = dSett.h;
+                        if(dSett.l && dSett.t) dSett.position = [dSett.l,dSett.t];
+                        if(dSett.width){
+                            var w=dSett.width;
+                            if(w.toString().charAt(w.length-1)==='p'){
+                                w=parseInt(w,10)*(wP/100);
                             }
-                            options.width=Math.min(w,wP);
+                            dSett.width=Math.min(w,wP);
                         }
-                        if(options.height){
-                            var h=options.height;
-                            if(h.toString().charAt(h.length-1)=='p'){
-                                h=parseInt(h)*(hP/100);
+                        if(dSett.height){
+                            var h=dSett.height;
+                            if(h.toString().charAt(h.length-1)==='p'){
+                                h=parseInt(h,10)*(hP/100);
                             }
-                            options.height=Math.min(h,hP);
+                            dSett.height=Math.min(h,hP);
                         }
                     }
-                    url.dialog(options);
-            	}
-            	else alert('jqueryUI required!');
-            	return false;
+                    url.dialog(dSett);
+                }
+                else alert('jqueryUI required!');
+                return false;
             }
             else if(a.hasClass(x+'win')){
                 e.preventDefault();
-                var options='';
-                var aSett=$.extend({},settings.win,a.classPre(x+'win',1));
-                var wP=$(window).width();
-                var hP=$(window).height();
+                if(!a.data('win-id')){
+                    a.data('win-id','win_'+((a.is('[id]')) ? a.attr('id') : new Date().getTime()));
+                }
+                var winID=a.data('win-id');
+                var wSett='';
+                var aSett=$.extend({},options.win,a.classPre(x+'win',1));
+                var wPage=$(window).width();
+                var hPage=$(window).height();
                 if(aSett.fullpage){
-                    aSett.width=wP;
-                    aSett.height=hP;
+                    aSett.width=wPage;
+                    aSett.height=hPage;
                     delete aSett.fullpage;
                 }
                 else if(aSett.fullscreen){
@@ -188,55 +205,108 @@
                     delete aSett.fullscreen;
                 }
                 else{
-                    var w=aSett.width;
-                    var h=aSett.height;
-                    if(w.toString().charAt(w.length-1)=='p'){
-                        w=parseInt(w)*(wP/100);
+                    var winW=aSett.width;
+                    var winH=aSett.height;
+                    if(winW.toString().charAt(winW.length-1)==='p'){
+                        winW=parseInt(winW,10)*(wPage/100);
                     }
-                    if(h.toString().charAt(h.length-1)=='p'){
-                        h=parseInt(h)*(hP/100);
+                    if(winH.toString().charAt(winH.length-1)==='p'){
+                        winH=parseInt(winH,10)*(hPage/100);
                     }
-                    aSett.width=Math.min(w,wP);
-                    aSett.height=Math.min(h,hP);
+                    aSett.width=Math.min(winW,wPage);
+                    aSett.height=Math.min(winH,hPage);
                     if(aSett.center){
-                        aSett.left = (wP/2)-(aSett.width/2);
-                        aSett.top = (hP/2)-(aSett.height/2);
+                        var screenX, screenY;
+                        if(navigator.userAgent.match(/msie/i)){
+                            screenX=window.screenLeft;
+                            screenY=window.screenTop;
+                        }
+                        else{
+                            screenX=window.screenX;
+                            screenY=window.screenY;
+                        }
+                        aSett.left = (wPage/2)-(aSett.width/2)+screenX;
+                        aSett.top = (hPage/2)-(aSett.height/2)+screenY;
                         delete aSett.center;
                     }
                 }
                 $.each(aSett,function(i,v){
-                    options+=','+i+'='+v;
+                    wSett+=','+i+'='+v;
                 });
-                options=options.substr(1);
-                window.open(url,'win',options);
+                wSett=wSett.substr(1);
+                var myWin=window.open('',winID,wSett);
+                if(myWin.location.href==='about:blank'){
+                    myWin.location.href = url;
+                }
+                myWin.focus();
+                return false;
+            }
+            else if(a.hasClass(x+'menu')){
+                if(!IsAnchor(url)) return false;
+                if($(url).is(':visible')) $(url).hide();
+                else{
+                    var menuConf=$.extend({},options.menu,a.classPre(x+'menu',1));
+                    var pos = a.position();
+                    var off = a.offset();
+                    var uW = $(url).width();
+                    var aW = a.width();
+                    var dW = $(document).width();
+                    switch(menuConf.pos){
+                    case 'bottom':
+                        if(off.left+uW>dW) pos.left-=uW-aW;
+                        pos.top+=a.outerHeight()+menuConf.offset;
+                        break;
+                    case 'top':
+                        if(off.left+uW>dW) pos.left-=uW-aW;
+                        pos.top-=menuConf.offset+$(url).height();
+                        break;
+                    case 'right':
+                        if(off.left+uW>dW) pos.left-=uW+menuConf.offset;
+                        else pos.left+=aW+menuConf.offset;
+                        break;
+                    case 'left':
+                        if(off.left<uW) pos.left+=aW+menuConf.offset;
+                        else pos.left-=uW+menuConf.offset;
+                        break;
+                    default: 
+                        return false;
+                    }
+                    $(url).css({zIndex:1001,position:'absolute',left:pos.left,top:pos.top}).show();
+                    if(menuConf.closeOnClick && !$(url).data('fhide')){
+                        $(url).find('*').click(function(){
+                            $(url).data('fhide',1).hide();
+                        });
+                    }
+                }
                 return false;
             }
             else if(a.hasClass(x+'scroll')){
-                if(!IsAnchor(url)) return false;
-                var scroll=$.extend({},settings.scroll,a.classPre(x+'scroll',1));
+                if(!IsAnchor(url)) return true;
+                var scroll=$.extend({},options.scroll,a.classPre(x+'scroll',1));
                 $('html,body').animate({scrollTop:$(url).offset().top+scroll.offsetY},scroll.speed);
                 return false;
             }
             else if(a.hasClass(x+'notify')){
                 if(IsAnchor(url)) return false;
                 $.get(url,function(response){
-                    var options=$.extend({},settings.notify,a.classPre(x+'notify',1));
-                    switch(options.type){
-                        case 'jGrowl':
-                            if($.jGrowl){
-                                var conf={};
-                                if(options.life) conf['life']=options.life*1000;
-                                else conf['sticky']=true;
-                                $.jGrowl(response,conf);
-                                break;
-                            }
-                        case 'growlUI':
-                            if($.growlUI){
-                                var life = (options.life) ? options.life*1000 : undefined;
-                                $.growlUI('',response,life);
-                                break;
-                            }
-                        default: alert(response);
+                    var nSett=$.extend({},options.notify,a.classPre(x+'notify',1));
+                    switch(nSett.type){
+                    case 'jGrowl':
+                        if($.jGrowl){
+                            var conf={};
+                            if(nSett.life) conf.life=nSett.life*1000;
+                            else conf.sticky=true;
+                            $.jGrowl(response,conf);
+                        }
+                        break;
+                    case 'growlUI':
+                        if($.growlUI){
+                            var life = (nSett.life) ? nSett.life*1000 : undefined;
+                            $.growlUI('',response,life);
+                        }
+                        break;
+                    default: 
+                        alert(response);
                     }
                 });
                 return false;
@@ -245,15 +315,15 @@
                 var target=null;
                 if(a.hasClass(x+'blank')) target='_blank';
                 else if(a.hasClass(x+'parent')) target='_parent';
-                else if(a.hasClass(x+'frame')) target=a.classPre('frame');
+                else if(a.classPre(x+'frame')) target=a.classPre(x+'frame');
                 else if(a.hasClass(x+'self') || confirmed) target='_self';
                 if(target){
                     window.open(url,target);
                     return false;
                 } 
             }
-        };
-        elements.unbind('click',$.fn.Aplus.Aplus_parser).click(Aplus_parser);
+        }
+        nodes.unbind('click',$.fn.HTMLplus).click(parser);
         //console.timeEnd('Aplus loading');
     };
     $.fn.classPre = function(prefix,all){
@@ -262,13 +332,13 @@
         var l=prefix.toString().length;
         var value=(all) ? {} : false;
         $.each(classes,function(i,v){
-            if(v.slice(0,l)==prefix){
+            if(v.slice(0,l)===prefix){
                 if(all){
                     var t = v.slice(l).split('-',2);
-                    if(t[1]==null) t[1]=1;
-                    else if(IsNumeric(t[1])) t[1]=parseInt(t[1]);
-                    else if(t[1]=='true') t[1]=true;
-                    else if(t[1]=='false') t[1]=false;
+                    if(typeof t[1]==='undefined' || t[1]===null) t[1]=1;
+                    else if(!isNaN(t[1])) t[1]=parseInt(t[1],10);
+                    else if(t[1]==='true') t[1]=true;
+                    else if(t[1]==='false') t[1]=false;
                     value[t[0]]=t[1];
                 } 
                 else{
@@ -279,10 +349,4 @@
         });
         return value;
     };
-    function IsNumeric(input){
-        return (input - 0) == input && input.length > 0;
-    };
-    function IsAnchor(url){
-        return (url.toString().charAt(0)=='#') ? true : false;
-    }
 })(jQuery);

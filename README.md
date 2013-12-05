@@ -1,7 +1,7 @@
-jQuery A+
+Aplus
 =========
 
-*A jQuery plugin to improve HTML <**A**> tag*. 
+A jQuery plugin to improve HTML &lt;A&gt; tag.
 
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
 The script syntax is compatible with all HTML / XHTML standards (HTML 4.01, XHTML 1.0, HTML 5, etc.)
@@ -13,6 +13,16 @@ http://japlus.simplit.it
 Changelog
 ---------
 
+**1.0.0** (not yet released)
+
+* Add: class **menu**
+* Fix: bug in **win** class (don't assign correct name)
+* Fix: bug in **win-center** class (The pop-up window was not centered correctly if the browser was not in fullscreen mode) 
+* Add: class **ajax**
+* Add: class **ajax-to-**_value_
+* Add: class **ajax-from-**_value_
+* Make JSHint friendly
+
 **0.6.0** (2013-02-01)
 
 * Add: dialog options
@@ -22,7 +32,7 @@ Changelog
 
 **0.5.1** (2012-12-03)
 
-* Fix bug: A tag without href generates a script error
+* Fix: A tag without href generates a script error
 
 **0.5.0** (2012-10-16)
 
