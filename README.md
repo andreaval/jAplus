@@ -1,4 +1,4 @@
-Aplus
+jAplus
 =========
 
 A jQuery plugin to improve HTML &lt;A&gt; tag.
