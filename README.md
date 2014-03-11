@@ -13,15 +13,16 @@ http://japlus.simplit.it
 Changelog
 ---------
 
-**1.0.0** (not yet released)
+**0.7.0** (2014-03-11)
 
-* Add: class **menu**
-* Fix: bug in **win** class (don't assign correct name)
-* Fix: bug in **win-center** class (The pop-up window was not centered correctly if the browser was not in fullscreen mode) 
 * Add: class **ajax**
 * Add: class **ajax-to-**_value_
 * Add: class **ajax-from-**_value_
+* Fix: **win** class (don't assign correct name)
+* Fix: **win-center** class (The pop-up window was not centered correctly if the browser was not in fullscreen mode)
+* Remove: class **before-**_value_
 * Make JSHint friendly
+* Add AMD support
 
 **0.6.0** (2013-02-01)
 

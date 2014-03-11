@@ -1,12 +1,20 @@
 /*!
  * JQuery A+ plugin
- * Version 1.0.0b1
+ * Version 0.7.0
  * @requires jQuery v1.5.0 or later
  *
- * Copyright (c) 2012-2013 Andrea Vallorani, andrea.vallorani@gmail.com
+ * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
  * Released under the MIT license
  */
-(function($) {
+(function (factory) {
+    if( typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module depending on jQuery.
+        define(['jquery'], factory);
+    } else{
+        // No AMD. Register plugin with global jQuery object.
+        factory(jQuery);
+    }
+}(function($) {
     /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, browser:true, devel:true, jquery:true, indent:4*/
     $.fn.Aplus = function(options){
         //console.time('Aplus loading');
@@ -105,9 +113,10 @@
             }
             if(a.hasClass('ajax')){
                 var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
-                var aId = (typeof(a.attr('id'))==='undefined') ? a.text() : a.attr('id');
-                ajaxSett.to = (ajaxSett.to===null) ? 'body' : '#'+ajaxSett.to;
-                if(typeof(ajaxSett.from)==='undefined' || ajaxSett.from===null) ajaxSett.from=ajaxSett.to;
+                if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
+                var aId = a.attr('id');
+                ajaxSett.to = (typeof(ajaxSett.to)==='undefined' || !ajaxSett.to) ? 'body' : '#'+ajaxSett.to;
+                ajaxSett.from = (typeof(ajaxSett.from)==='undefined' || !ajaxSett.from) ? null : '#'+ajaxSett.from;
                 var to=$(ajaxSett.to);
                 var localCache=to.children('div[data-rel="'+aId+'"]');
                 var toH=to.height();
@@ -119,9 +128,8 @@
                     var container=$('<div data-rel="'+aId+'" />');
                     container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
                     $.ajax({url:url,dataType:'html'}).done(function(data){
-                        data = '<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>';
-                        if(ajaxSett.to==='body') container.html($(data).html());
-                        else container.html($(data).find(ajaxSett.from).html());
+                        data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
+                        container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());
                     });
                 }
                 return false;
@@ -241,45 +249,6 @@
                 myWin.focus();
                 return false;
             }
-            else if(a.hasClass(x+'menu')){
-                if(!IsAnchor(url)) return false;
-                if($(url).is(':visible')) $(url).hide();
-                else{
-                    var menuConf=$.extend({},options.menu,a.classPre(x+'menu',1));
-                    var pos = a.position();
-                    var off = a.offset();
-                    var uW = $(url).width();
-                    var aW = a.width();
-                    var dW = $(document).width();
-                    switch(menuConf.pos){
-                    case 'bottom':
-                        if(off.left+uW>dW) pos.left-=uW-aW;
-                        pos.top+=a.outerHeight()+menuConf.offset;
-                        break;
-                    case 'top':
-                        if(off.left+uW>dW) pos.left-=uW-aW;
-                        pos.top-=menuConf.offset+$(url).height();
-                        break;
-                    case 'right':
-                        if(off.left+uW>dW) pos.left-=uW+menuConf.offset;
-                        else pos.left+=aW+menuConf.offset;
-                        break;
-                    case 'left':
-                        if(off.left<uW) pos.left+=aW+menuConf.offset;
-                        else pos.left-=uW+menuConf.offset;
-                        break;
-                    default: 
-                        return false;
-                    }
-                    $(url).css({zIndex:1001,position:'absolute',left:pos.left,top:pos.top}).show();
-                    if(menuConf.closeOnClick && !$(url).data('fhide')){
-                        $(url).find('*').click(function(){
-                            $(url).data('fhide',1).hide();
-                        });
-                    }
-                }
-                return false;
-            }
             else if(a.hasClass(x+'scroll')){
                 if(!IsAnchor(url)) return true;
                 var scroll=$.extend({},options.scroll,a.classPre(x+'scroll',1));
@@ -349,4 +318,4 @@
         });
         return value;
     };
-})(jQuery);
+}));
