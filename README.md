@@ -4,7 +4,9 @@ jAplus
 A jQuery plugin to improve HTML &lt;A&gt; tag.
 
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
-The script syntax is compatible with all HTML / XHTML standards (HTML 4.01, XHTML 1.0, HTML 5, etc.)
+The script syntax is compatible with all HTML / XHTML standards.
+
+** For example, you can create a link that opens a new window (like the target attribute) without invalidating the HTML code! **
 
 Website
 -----------------------
