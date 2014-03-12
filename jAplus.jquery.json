@@ -2,7 +2,7 @@
   "name": "jAplus",
   "version": "0.7.1",
   "title": "jQuery A+",
-  "description": "jQuery plugin to improve A tag",
+  "description": "jQuery A+ is an unobtrusive script that adds useful features to A tag allowing webpages to maintain compatibility with HTML standards. The script syntax is compatible with all HTML / XHTML standards. For example, you can create a link that opens a new window (like the target attribute) without invalidating the HTML code!",
   "author": {
       "name" : "Andrea Vallorani",
       "email" : "andrea.vallorani@gmail.com"
