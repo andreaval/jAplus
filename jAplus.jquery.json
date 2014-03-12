@@ -1,0 +1,37 @@
+{
+  "name": "jAplus",
+  "version": "0.7.1",
+  "title": "jQuery A+",
+  "description": "jQuery plugin to improve A tag",
+  "author": {
+      "name" : "Andrea Vallorani",
+      "email" : "andrea.vallorani@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "Andrea Vallorani",
+      "url": "https://github.com/andreaval"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/carhartl/jquery-cookie/master/MIT-LICENSE.txt"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">= 1.5.0"
+  },
+  "bugs": "https://github.com/andreaval/jAplus/issues",
+  "homepage": "http://japlus.simplit.it",
+  "docs": "http://japlus.simplit.it/doc.htm",
+  "demo": "http://japlus.simplit.it/demo.htm",
+  "keywords": [
+    "html5",
+    "link",
+    "popup",
+    "ajax",
+    "dialog",
+    "scroll"
+  ]
+}

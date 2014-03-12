@@ -13,6 +13,11 @@ http://japlus.simplit.it
 Changelog
 ---------
 
+**0.7.1** (2014-03-12)
+
+* Add Package Manifest for JQuery Plugin Registry
+* Removed unused option 
+
 **0.7.0** (2014-03-11)
 
 * Add: class **ajax**

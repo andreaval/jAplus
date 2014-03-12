@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.7.0
+ * Version 0.7.1
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -31,8 +31,7 @@
             scroll: {speed:300,offsetY:0},
             notify: {life:10,type:null},
             dialog: {dialogClass:'htmlplus-dialog'},
-            ajax: {loadMsg:'<img src="loader.gif" />'},
-            menu: {pos:'bottom',closeOnClick:true,offset:3}
+            ajax: {loadMsg:'<img src="loader.gif" />'}
         },options);
         var x=options.prefix;
 

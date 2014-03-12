@@ -1,8 +1,8 @@
 {
   "name": "jAplus",
   "title": "jQuery A+",
-  "description": "jQuery plugin to improve the HTML <a> tag",
-  "version": "0.7.0",
+  "description": "jQuery plugin to improve A tag",
+  "version": "0.7.1",
   "main": "./jquery.Aplus.js",
   "dependencies": {
     "jquery": ">= 1.5.0"
@@ -20,7 +20,6 @@
       "url" : "https://github.com/andreaval/jAplus/issues"
   },
   "licenses": [
-      "http://www.opensource.org/licenses/mit-license.php",
-      "http://www.gnu.org/licenses/gpl.html"
+      "http://www.opensource.org/licenses/mit-license.php"
   ]
 }
