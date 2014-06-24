@@ -6,7 +6,9 @@ A jQuery plugin to improve HTML &lt;A&gt; tag.
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
 The script syntax is compatible with all HTML / XHTML standards.
 
-**For example, you can create a link that opens a new window (like the target attribute) without invalidating the HTML code!**
+**For example, you can open link in a new window/tab (like target="_blank") without invalidating the HTML code!**
+
+Has JavaScript been disabled in the client browser? No problem, the links will continue to work in the traditional way!
 
 Website
 -----------------------
@@ -14,6 +16,13 @@ http://japlus.simplit.it
 
 Changelog
 ---------
+
+**0.8.0** (2014-06-24)
+
+* Improved loading script up to 2x
+* A+ also works for A tags loaded via ajax
+* Add: event **ajaxToComplete.aplus**
+* Add: option **win.check**
 
 **0.7.1** (2014-03-12)
 

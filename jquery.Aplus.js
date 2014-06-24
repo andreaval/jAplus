@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.7.1
+ * Version 0.8.0
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -17,14 +17,12 @@
 }(function($) {
     /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, browser:true, devel:true, jquery:true, indent:4*/
     $.fn.Aplus = function(options){
-        //console.time('Aplus loading');
-        var nodes=(this.is('a[class]')) ? this : this.find('a[class]');
         var IsAnchor = function(url){
             return (url.toString().charAt(0)==='#') ? true : false;
         };
         options = $.extend(true,{
             prefix: '',
-            win: {width:400,height:400,scrollbars:0,toolbar:0},
+            win: {width:400,height:400,scrollbars:0,toolbar:0,check:true},
             confirm: 'Are you sure you want to open the link?',
             confirmType: false,
             disabledMsg: 'alert',
@@ -34,11 +32,22 @@
             ajax: {loadMsg:'<img src="loader.gif" />'}
         },options);
         var x=options.prefix;
-
-        nodes.filter('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled').each(function(){
-            if($(this).is('[title]')){
-                var e=$(this);
-                e.data('title',e.attr('title')).removeAttr('title');
+        this.each(function(){
+            var $this = $(this);
+            if(!$this.is('a')){
+                $this.find('a.'+x+'confirm,a.'+x+'dialog,a.'+x+'disabled').each(function(){
+                    if($(this).is('[title]')){
+                        var e=$(this);
+                        e.data('title',e.attr('title')).removeAttr('title');
+                    }
+                });
+                $this.delegate('a[class]','click',parser);
+            }
+            else if($this.is('[class]')){
+                if($this.is('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled') && $this.is('[title]')){
+                    $this.data('title',$this.attr('title')).removeAttr('title');
+                }
+                $this.click(parser);
             }
         });
 
@@ -107,7 +116,10 @@
                         }
                     }
                 }
-                else if(confirm(msg)) return a.data('confirmed',true).triggerHandler('click');
+                else if(confirm(msg)){
+                    a.unbind('click',$.fn.Aplus).click(parser);
+                    return a.data('confirmed',true).triggerHandler('click');
+                }
                 return false;
             }
             if(a.hasClass('ajax')){
@@ -129,6 +141,9 @@
                     $.ajax({url:url,dataType:'html'}).done(function(data){
                         data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
                         container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());
+                        to.triggerHandler("ajaxToComplete.aplus",{
+                            obj: container
+                        });
                     });
                 }
                 return false;
@@ -199,6 +214,7 @@
                 var winID=a.data('win-id');
                 var wSett='';
                 var aSett=$.extend({},options.win,a.classPre(x+'win',1));
+                if(aSett.check) a.addClass(x+'disabled');
                 var wPage=$(window).width();
                 var hPage=$(window).height();
                 if(aSett.fullpage){
@@ -246,6 +262,9 @@
                     myWin.location.href = url;
                 }
                 myWin.focus();
+                $(myWin.document).ready(function(){
+                    if(aSett.check) a.removeClass(x+'disabled');
+                });
                 return false;
             }
             else if(a.hasClass(x+'scroll')){
@@ -291,8 +310,6 @@
                 } 
             }
         }
-        nodes.unbind('click',$.fn.HTMLplus).click(parser);
-        //console.timeEnd('Aplus loading');
     };
     $.fn.classPre = function(prefix,all){
         var classes=this.attr('class').split(' ');

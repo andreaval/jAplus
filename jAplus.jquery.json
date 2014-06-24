@@ -1,8 +1,8 @@
 {
   "name": "jAplus",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "title": "jQuery A+",
-  "description": "jQuery A+ is an unobtrusive script that adds useful features to A tag allowing webpages to maintain compatibility with HTML standards. The script syntax is compatible with all HTML / XHTML standards. For example, you can create a link that opens a new window (like the target attribute) without invalidating the HTML code!",
+  "description": "jQuery A+ is an unobtrusive script that adds useful features to A tag allowing webpages to maintain compatibility with HTML standards. The script syntax is compatible with all HTML / XHTML standards. For example, you can open link in a new window/tab (like target=_blank) without invalidating the HTML code.",
   "author": {
       "name" : "Andrea Vallorani",
       "email" : "andrea.vallorani@gmail.com"
@@ -16,7 +16,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.github.com/carhartl/jquery-cookie/master/MIT-LICENSE.txt"
+      "url": "http://www.opensource.org/licenses/mit-license.php"
     }
   ],
   "dependencies": {
@@ -27,8 +27,10 @@
   "docs": "http://japlus.simplit.it/doc.htm",
   "demo": "http://japlus.simplit.it/demo.htm",
   "keywords": [
-    "html5",
     "link",
+    "confirm",
+    "windows",
+    "anchor",
     "popup",
     "ajax",
     "dialog",
