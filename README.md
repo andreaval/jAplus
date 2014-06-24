@@ -1,4 +1,4 @@
-jAplus
+jQuery A+
 =========
 
 A jQuery plugin to improve HTML &lt;A&gt; tag.
@@ -6,9 +6,9 @@ A jQuery plugin to improve HTML &lt;A&gt; tag.
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
 The script syntax is compatible with all HTML / XHTML standards.
 
-**For example, you can open link in a new window/tab (like target="_blank") without invalidating the HTML code!**
+**For example, you can open link in a new window/tab (like target="_blank") without invalidating the HTML code.**
 
-Has JavaScript been disabled in the client browser? No problem, the links will continue to work in the traditional way!
+Is JavaScript disabled? No problem, the links will continue to work in the traditional way!
 
 Website
 -----------------------
