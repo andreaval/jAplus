@@ -20,7 +20,8 @@ Changelog
 **0.8.0** (2014-06-24)
 
 * Improved loading script up to 2x
-* A+ also works for A tags loaded via ajax
+* A+ works now for <A> tags loaded via ajax
+* Added control to avoid multiple clicks while loading the popup (class **win**)
 * Add: event **ajaxToComplete.aplus**
 * Add: option **win.check**
 
