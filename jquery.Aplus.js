@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.8.1
+ * Version 0.8.2
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -126,29 +126,33 @@
             }
             if(a.hasClass('ajax')){
                 var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
-                if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
-                var aId = a.attr('id');
-                ajaxSett.to = (typeof(ajaxSett.to)==='undefined' || !ajaxSett.to) ? null : '#'+ajaxSett.to;
-                ajaxSett.from = (typeof(ajaxSett.from)==='undefined' || !ajaxSett.from) ? null : '#'+ajaxSett.from;
-                var to=$(ajaxSett.to);
-                var localCache=to.children('div[data-rel="'+aId+'"]');
-                var toH=to.height();
-                to.children().hide();
-                if(localCache.length){
-                    localCache.show();
+                if(typeof(ajaxSett.to)!=='undefined' && ajaxSett.to){
+                    if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
+                    var aId = a.attr('id');
+                    ajaxSett.to = '#'+ajaxSett.to;
+                    ajaxSett.from = (typeof(ajaxSett.from)==='undefined' || !ajaxSett.from) ? null : '#'+ajaxSett.from;
+                    var to=$(ajaxSett.to);
+                    var localCache=to.children('div[data-rel="'+aId+'"]');
+                    var toH=to.height();
+                    to.children(':not(div[data-rel])').remove();
+                    to.children().hide();
+                    if(localCache.length){
+                        localCache.show();
+                    }
+                    else{
+                        var container=$('<div data-rel="'+aId+'" />');
+                        container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                        $.ajax({url:url,dataType:'html'}).done(function(data){
+                            data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
+                            container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());
+                            to.trigger("ajaxToComplete.aplus",{obj:container});
+                            a.trigger("ajaxComplete.aplus",{response:data.html()});
+                        });
+                    }
                 }
                 else{
-                    var container=null;
-                    if(ajaxSett.to){
-                        container=$('<div data-rel="'+aId+'" />');
-                        container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
-                    }   
                     $.ajax({url:url,dataType:'html'}).done(function(data){
-                        data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
-                        if(container) container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());                      
-                        to.triggerHandler("ajaxToComplete.aplus",{
-                            obj: container
-                        });
+                        a.trigger("ajaxComplete.aplus",{response:data});
                     });
                 }
                 return false;
