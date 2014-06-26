@@ -17,6 +17,11 @@ http://japlus.simplit.it
 Changelog
 ---------
 
+
+**0.8.1** (2014-06-26)
+
+* Fix: attribute title is not hidden in the tags loaded via ajax
+
 **0.8.0** (2014-06-24)
 
 * Improved loading script up to 2x

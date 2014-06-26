@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.8.0
+ * Version 0.8.1
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -18,7 +18,18 @@
     /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, browser:true, devel:true, jquery:true, indent:4*/
     $.fn.Aplus = function(options){
         var IsAnchor = function(url){
-            return (url.toString().charAt(0)==='#') ? true : false;
+            return (url && url.toString().charAt(0)==='#') ? true : false;
+        };
+        var HideTitle = function(el){
+            el=$(el);
+            if(el.is('[title]') && el.is('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled')){
+                el.data('title',el.attr('title')).removeAttr('title');
+            }
+        };
+        var GetTitle = function(el){
+            if(el.data('title')) return el.data('title');
+            else if(el.is('[title]')) return el.attr('title');
+            else return null;
         };
         options = $.extend(true,{
             prefix: '',
@@ -35,18 +46,11 @@
         this.each(function(){
             var $this = $(this);
             if(!$this.is('a')){
-                $this.find('a.'+x+'confirm,a.'+x+'dialog,a.'+x+'disabled').each(function(){
-                    if($(this).is('[title]')){
-                        var e=$(this);
-                        e.data('title',e.attr('title')).removeAttr('title');
-                    }
-                });
                 $this.delegate('a[class]','click',parser);
+                $this.delegate('a[class]','mouseenter',HideTitle);
             }
             else if($this.is('[class]')){
-                if($this.is('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled') && $this.is('[title]')){
-                    $this.data('title',$this.attr('title')).removeAttr('title');
-                }
+                HideTitle(this);
                 $this.click(parser);
             }
         });
@@ -54,7 +58,7 @@
         function parser(e){
             var a=$(this);
             if(a.hasClass(x+'disabled')){
-                if(a.data('title') && options.disabledMsg==='alert') alert(a.data('title'));
+                if(GetTitle(a) && options.disabledMsg==='alert') alert(GetTitle(a));
                 return false; 
             }
             if(a.hasClass(x+'print')){
@@ -70,20 +74,18 @@
                 var mask=a.classPre(x+'confirm-mask');
                 if(!mask){
                     if(IsAnchor(url)) mask=url;
-                    else if(a.data('title') && IsAnchor(a.data('title'))){
-                        mask=a.data('title');
-                    }
+                    else if(IsAnchor(GetTitle(a))) mask=GetTitle(a);
                 }
                 else mask='#'+mask;
                 if(mask && $(mask).length){
                     msg=$(mask).html();
-                    if(a.data('title')){
-                        msg=msg.replace(/\[title\]/g,a.data('title'));
+                    if(GetTitle(a)){
+                        msg=msg.replace(/\[title\]/g,GetTitle(a));
                     }
                     msg=msg.replace(/\[href]/g,url);
                     msg=msg.replace(/\[text]/g,a.text());
                 }
-                else if(a.data('title')) msg=a.data('title');
+                else if(GetTitle(a)) msg=GetTitle(a);
 
                 if(options.confirmType!==false){
                     switch(options.confirmType){
@@ -126,7 +128,7 @@
                 var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
                 if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
                 var aId = a.attr('id');
-                ajaxSett.to = (typeof(ajaxSett.to)==='undefined' || !ajaxSett.to) ? 'body' : '#'+ajaxSett.to;
+                ajaxSett.to = (typeof(ajaxSett.to)==='undefined' || !ajaxSett.to) ? null : '#'+ajaxSett.to;
                 ajaxSett.from = (typeof(ajaxSett.from)==='undefined' || !ajaxSett.from) ? null : '#'+ajaxSett.from;
                 var to=$(ajaxSett.to);
                 var localCache=to.children('div[data-rel="'+aId+'"]');
@@ -136,11 +138,14 @@
                     localCache.show();
                 }
                 else{
-                    var container=$('<div data-rel="'+aId+'" />');
-                    container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                    var container=null;
+                    if(ajaxSett.to){
+                        container=$('<div data-rel="'+aId+'" />');
+                        container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                    }   
                     $.ajax({url:url,dataType:'html'}).done(function(data){
                         data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
-                        container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());
+                        if(container) container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());                      
                         to.triggerHandler("ajaxToComplete.aplus",{
                             obj: container
                         });
@@ -172,7 +177,7 @@
                         url=frame;
                     }
                     else url=$(url);
-                    if(a.data('title')) dSett.title=a.data('title');
+                    if(GetTitle(a)) dSett.title=GetTitle(a);
 
                     var wP=$(window).width();
                     var hP=$(window).height();
