@@ -134,7 +134,7 @@
                     var to=$(ajaxSett.to);
                     var localCache=to.children('div[data-rel="'+aId+'"]');
                     var toH=to.height();
-                    to.children(':not(div[data-rel])').remove();
+                    var lastVis = to.children(':visible');
                     to.children().hide();
                     if(localCache.length){
                         localCache.show();
@@ -144,15 +144,33 @@
                         container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
                         $.ajax({url:url,dataType:'html'}).done(function(data){
                             data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
-                            container.html((ajaxSett.from) ? data.find(ajaxSett.from).html() : data.html());
+                            if(ajaxSett.from){
+                                var search = data.find(ajaxSett.from);
+                                if(search.length){
+                                    container.html(search.html());
+                                    if(lastVis.is(':not(div[data-rel])')) lastVis.remove();
+                                }
+                                else{
+                                    lastVis.show();
+                                    container.remove();
+                                    a.trigger("ajaxMismatch.aplus",{response:data.html()});
+                                }
+                            }
+                            else container.html(data.html());
                             to.trigger("ajaxToComplete.aplus",{obj:container});
                             a.trigger("ajaxComplete.aplus",{response:data.html()});
+                        }).fail(function(tS,eT){
+                            lastVis.show();
+                            container.remove();
+                            a.trigger("ajaxError.aplus",{textStatus:tS,errorThrown:eT});
                         });
                     }
                 }
                 else{
                     $.ajax({url:url,dataType:'html'}).done(function(data){
                         a.trigger("ajaxComplete.aplus",{response:data});
+                    }).fail(function(tS,eT){
+                        a.trigger("ajaxError.aplus",{textStatus:tS,errorThrown:eT});
                     });
                 }
                 return false;
