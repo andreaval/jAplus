@@ -17,9 +17,12 @@ http://japlus.simplit.it
 Changelog
 ---------
 
-**0.8.2** (not yet released)
+**0.8.2** (2014-06-30)
 
 * Fix: script error on ajax request when ajax-to param is empty
+* Add: event **ajaxComplete.aplus**
+* Add: event **ajaxError.aplus**
+* Add: event **ajaxMismatch.aplus**
 
 **0.8.1** (2014-06-26)
 
