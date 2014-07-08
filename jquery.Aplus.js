@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.8.2
+ * Version 0.8.3
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -21,7 +21,7 @@
             return (url && url.toString().charAt(0)==='#') ? true : false;
         };
         var HideTitle = function(el){
-            el=$(el);
+            el=$(el.target);
             if(el.is('[title]') && el.is('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled')){
                 el.data('title',el.attr('title')).removeAttr('title');
             }
@@ -54,12 +54,11 @@
                 $this.click(parser);
             }
         });
-
         function parser(e){
             var a=$(this);
             if(a.hasClass(x+'disabled')){
                 if(GetTitle(a) && options.disabledMsg==='alert') alert(GetTitle(a));
-                return false; 
+                return false;
             }
             if(a.hasClass(x+'print')){
                 window.setTimeout(window.print,0);
