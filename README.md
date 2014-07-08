@@ -17,9 +17,13 @@ http://japlus.simplit.it
 Changelog
 ---------
 
+**0.8.3** (2014-07-08)
+
+* Fix: function HideTitle does not hide title attributes correctly
+
 **0.8.2** (2014-06-30)
 
-* Fix: script error on ajax request when ajax-to param is empty
+* Fix: error on ajax request when ajax-to param is empty
 * Add: event **ajaxComplete.aplus**
 * Add: event **ajaxError.aplus**
 * Add: event **ajaxMismatch.aplus**
