@@ -1,6 +1,6 @@
 /*!
  * JQuery A+ plugin
- * Version 0.8.3
+ * Version 0.8.4
  * @requires jQuery v1.5.0 or later
  *
  * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
@@ -118,8 +118,8 @@
                     }
                 }
                 else if(confirm(msg)){
-                    a.unbind('click',$.fn.Aplus).click(parser);
-                    return a.data('confirmed',true).triggerHandler('click');
+                    a.unbind('click',parser).click(parser).data('confirmed',true);
+                    return (a.triggerHandler('click')) ? true : false;
                 }
                 return false;
             }

@@ -17,9 +17,13 @@ http://japlus.simplit.it
 Changelog
 ---------
 
+**0.8.4** (2014-09-04)
+
+* Fix: class confirm in conjunction with other classes may not work properly
+
 **0.8.3** (2014-07-08)
 
-* Fix: function HideTitle does not hide title attributes correctly
+* Fix: the method HideTitle doesn't hide the title attribute correctly
 
 **0.8.2** (2014-06-30)
 
