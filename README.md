@@ -10,7 +10,7 @@ The script syntax is compatible with all HTML / XHTML standards.
 
 Is JavaScript disabled? No problem, the links will continue to work in the traditional way!
 
-Website
+Website 
 -----------------------
 http://japlus.simplit.it
 

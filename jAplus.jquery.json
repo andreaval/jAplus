@@ -34,6 +34,7 @@
     "popup",
     "ajax",
     "dialog",
-    "scroll"
+    "scroll",
+    "notify"
   ]
 }
