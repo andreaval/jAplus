@@ -12,10 +12,13 @@ Is JavaScript disabled? No problem, the links will continue to work in the tradi
 
 Website 
 -----------------------
-http://japlus.simplit.it
+http://japlus.vallorani.org
 
 Changelog
 ---------
+
+**0.9.0** (cooming soon)
+
 
 **0.8.4** (2014-09-04)
 
