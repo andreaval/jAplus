@@ -1,0 +1,6 @@
+body{font-family: monospace;font-size:13px;}
+span{color:#444;}
+p{font-family:Arial;font-size:.9em;color:#333;}
+h1{font-family:Arial;font-size:1.3em;color:#111;padding:50px;text-align:center}
+div{background:#efd;padding:5px;border-color:#dec;border-style:solid;border-width:1px 1px 1px 5px;color:#444;}
+b{color:green;}

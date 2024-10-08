@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OK!</title>
+<link rel="stylesheet" type="text/css" href="ok.css" />
+<script src="../js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../jquery.Aplus.js?082" type="text/javascript" charset="utf-8"></script>
+<script src="../index.js?2" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function(){
+        $('body').Aplus({ajax:{loadMsg:'wait ...'}});
+        
+        $('#menu').on('ajaxComplete.aplus','a',function(event,param){
+           alert($(event.target).html()+' load this content: '+param.response);
+        }).on('ajaxError.aplus','a',function(event,param){
+           alert('Request error ('+param.errorThrown+')');
+        }).on('ajaxMismatch.aplus','a',function(event,param){
+           alert('Response error ('+param.response+')');
+        });
+    });
+    </script>
+</head>
+<body>
+    <div id="div1">
+        <pre>
+    $('#menu').on('ajaxComplete.aplus','a',function(event,param){
+        alert($(event.target).html()+' load this content: '+param.response);
+    }).on('ajaxError.aplus','a',function(event,param){
+        alert('Request error ('+param.errorThrown+')');
+     }).on('ajaxMismatch.aplus','a',function(event,param){
+        alert('Response error ('+param.response+')');
+     });
+        </pre>
+    </div>
+        <ul id="menu">
+            <li><a href="ajax.html" class="ajax ajax-to-result" >Link 1</a></li>
+            <li><a href="ajax2.html" class="ajax ajax-to-result">Link 2</a></li>
+        </ul>
+    <span id="result">
+        
+    </span>
+</body>
+</html>

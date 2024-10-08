@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OK!</title>
+<link rel="stylesheet" type="text/css" href="ok.css" />
+<script src="../index.js?2" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <h1>This link is working!</h1>
+    <div>
+        &LT;a href="ok28.htm" id="l28" class="<b>confirm</b>" title="Message in custom confirm box. Open link?"&GT;<span>Custom dialog</span>&LT;/a&GT;
+    </div>
+    <p>
+        Set the 'confirmType' option to <i>my_function</i>:<br>
+        <pre>$('#l28').Aplus({confirmType: function(msg,callback){
+	var div=$('&LT;div id="my_confirm"&GT;');
+	div.appendTo('body').html(msg+'&LT;br/&GT;&LT;input type="button" value="OK"&GT; &LT;input type="button" value="Cancel"&GT;');
+	div.find('input:button').click(function(){
+		if(this.value=='OK') callback.apply();
+		div.remove();
+	});
+}});
+        </pre>
+    </p>
+</body>
+</html>
