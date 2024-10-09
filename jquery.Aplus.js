@@ -1,9 +1,10 @@
 /*!
- * JQuery A+ plugin
- * Version 0.8.4
- * @requires jQuery v1.5.0 or later
+ * JQuery A+
+ * Version 0.9.0b4
+ * @requires jQuery >= 1.5
+ * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
- * Copyright (c) 2012-2014 Andrea Vallorani, andrea.vallorani@gmail.com
+ * Copyright (c) 2012-2024 Andrea Vallorani
  * Released under the MIT license
  */
 (function (factory) {
@@ -39,8 +40,10 @@
             disabledMsg: 'alert',
             scroll: {speed:300,offsetY:0},
             notify: {life:10,type:null},
-            dialog: {dialogClass:'htmlplus-dialog'},
-            ajax: {loadMsg:'<img src="loader.gif" />'}
+            dialog: {dialogClass:'japlus'},
+            dialogType: 'html5',
+            dialogCloseIcon: 'X',
+            ajax: {loadMsg:'...'}
         },options);
         var x=options.prefix;
         this.each(function(){
@@ -85,36 +88,53 @@
                     msg=msg.replace(/\[text]/g,a.text());
                 }
                 else if(GetTitle(a)) msg=GetTitle(a);
+                if(a.hasClass(x+'confirm-ui')) options.confirmType = 'ui';
+                else if(a.hasClass(x+'confirm-html5')) options.confirmType = 'html5';
 
                 if(options.confirmType!==false){
                     switch(options.confirmType){
-                    case 'dialog':
-                        if(!jQuery.ui) return false;
-                        $("<div/>").html(msg).dialog({
-                            modal:true,
-                            resizable:false,
-                            dialogClass:'htmlplus-dialog',
-                            buttons:{
-                                Ok:function(){
-                                    if($(this).children('form').length===0){
-                                        a.data('confirmed',true).click();
-                                    }
-                                    else $(this).children('form').submit();
-                                    $(this).dialog("close");
-                                },
-                                Cancel:function(){
-                                    $(this).dialog("close");
-                                }
+                        case 'dialog':
+                            if(!jQuery.ui){
+                                console.error("Unable to open confirm dialog. jQueryUI library not present!");
+                                return false;
                             }
-                        });
-                        break;
-                    default:
-                        if(typeof options.confirmType==='function'){
-                            options.confirmType(a,msg,function(){
-                                if($(mask+' form').length) $('form',this).submit();
-                                 else a.data('confirmed',true).click();
+                            $("<div/>").html(msg).dialog({
+                                modal:true,
+                                resizable:false,
+                                dialogClass:options.dialog.dialogClass,
+                                buttons:{
+                                    Ok:function(){
+                                        if($(this).children('form').length===0){
+                                            a.data('confirmed',true).click();
+                                        }
+                                        else $(this).children('form').submit();
+                                        $(this).dialog("close");
+                                    },
+                                    Cancel:function(){
+                                        $(this).dialog("close");
+                                    }
+                                }
                             });
-                        }
+                        break;
+                        case 'html5':
+                            var $d = $("<dialog/>").html('<p>'+msg+'</p><form method="dialog"></form>').appendTo('body');
+                            var $f = $d.children('form').eq(0);
+                            $('<button value="ok">Confirm</button>').click(function(){
+                                a.data('confirmed',true).click();
+                                $d.remove();
+                            }).appendTo($f);
+                            $('<button class="no">Cancel</button>').click(function(){
+                                $d.remove();
+                            }).appendTo($f);
+                            $d.get(0).showModal();
+                        break;
+                        default:
+                            if(typeof options.confirmType==='function'){
+                                options.confirmType(a,msg,function(){
+                                    if($(mask+' form').length) $('form',this).submit();
+                                     else a.data('confirmed',true).click();
+                                });
+                            }
                     }
                 }
                 else if(confirm(msg)){
@@ -123,7 +143,7 @@
                 }
                 return false;
             }
-            if(a.hasClass('ajax')){
+            if(a.hasClass(x+'ajax')){
                 var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
                 if(typeof(ajaxSett.to)!=='undefined' && ajaxSett.to){
                     if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
@@ -137,10 +157,13 @@
                     to.children().hide();
                     if(localCache.length){
                         localCache.show();
+                        to.trigger("ajaxToComplete.aplus",{obj:localCache});
                     }
                     else{
                         var container=$('<div data-rel="'+aId+'" />');
-                        container.html('<div class="loader" style="text-align:center;line-height:'+toH+'px;">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                        container.html('<div hidden class="'+x+'loader">'+ajaxSett.loadMsg+'</div>').appendTo(to);
+                        if(a.hasClass(x+'slide')) container.slideDown('fast');
+                        else container.show();
                         $.ajax({url:url,dataType:'html'}).done(function(data){
                             data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
                             if(ajaxSett.from){
@@ -175,61 +198,116 @@
                 return false;
             }
             else if(a.hasClass(x+'dialog')){
-                if(jQuery.ui){
-                    var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
-                    if(!IsAnchor(url)){
-                        var frame;
-                        if(a.hasClass(x+'dialog-ajax')){
-                            frame=$('<div></div>');
-                            frame.load(url);
+                var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
+                var frame=null;
+                var $dialogContent;
+                if(!IsAnchor(url)){
+                    if(a.hasClass(x+'dialog-ajax')){
+                        let rId = (Math.random() + 1).toString(36).substring(7);
+                        frame=$('<div id="'+rId+'" hidden></div>').appendTo('body');
+                        frame.load(url,function(){
+                            a.attr('href','#'+rId).removeClass('dialog-ajax').click();
+                            return false;
+                        });
+                        return false;
+                    }
+                    else{
+                        frame=$('<iframe src="'+url+'" style="padding:0;"></iframe>');
+                        dSett.open=function(){
+                            frame.css('width',$(this).parent().width());
+                        };
+                    }
+                    $dialogContent=frame;
+                }
+                else $dialogContent=$(url);
+                if(GetTitle(a)) dSett.title=GetTitle(a);
+                var wP=$(document).width();
+                var hP=$(window).height();
+                if(dSett.full){
+                    dSett.width=wP;
+                    dSett.height=hP;
+                    if(typeof dSett.draggable==='undefined') dSett.draggable=false;
+                }
+                else{
+                    if(dSett.w) dSett.width = dSett.w;
+                    if(dSett.h) dSett.height = dSett.h;
+                    if(dSett.width){
+                        var w=dSett.width;
+                        if(w.toString().charAt(w.length-1)==='p'){
+                            w=parseInt(w,10)*wP/100;
                         }
-                        else{
-                            frame=$('<iframe src="'+url+'" style="padding:0;"></iframe>');
-                            dSett.open=function(){
-                                frame.css('width',$(this).parent().width());
-                            };
+                        dSett.width=Math.min(w,wP);
+                    }
+                    if(dSett.height){
+                        var h=dSett.height;
+                        if(h.toString().charAt(h.length-1)==='p'){
+                            h=parseInt(h,10)*hP/100;
                         }
+                        dSett.height=Math.min(h,hP);
+                    }
+                }
+                if(options.dialogType==='ui'){
+                    if(!jQuery.ui){                                
+                        console.error("Unable to open dialog. jQueryUI library not present!");
+                        return false;
+                    }
+                    if(dSett.l && dSett.t){ 
+                        dSett.position = {my:"left top",at:'left+'+dSett.l+' top+'+dSett.t,of:window};
+                    }
+                    else if(dSett.full){
+                        dSett.width-=15;
+                        dSett.position = {my:"left top",at:'left+3 top+3',of:window};
+                    }
+                    if(frame!==null){
                         dSett.dragStart=dSett.resizeStart=function(){
                             frame.hide();
                         };
                         dSett.dragStop=dSett.resizeStop=function(){
                             frame.show();
                         };
-                        url=frame;
                     }
-                    else url=$(url);
-                    if(GetTitle(a)) dSett.title=GetTitle(a);
-
-                    var wP=$(window).width();
-                    var hP=$(window).height();
-                    if(dSett.full){
-                        dSett.width=wP-15;
-                        dSett.height=hP;
-                        dSett.position = [3,3];
-                        if(typeof dSett.draggable==='undefined') dSett.draggable=false;
-                    }
-                    else{
-                        if(dSett.w) dSett.width = dSett.w;
-                        if(dSett.h) dSett.height = dSett.h;
-                        if(dSett.l && dSett.t) dSett.position = [dSett.l,dSett.t];
-                        if(dSett.width){
-                            var w=dSett.width;
-                            if(w.toString().charAt(w.length-1)==='p'){
-                                w=parseInt(w,10)*(wP/100);
-                            }
-                            dSett.width=Math.min(w,wP);
-                        }
-                        if(dSett.height){
-                            var h=dSett.height;
-                            if(h.toString().charAt(h.length-1)==='p'){
-                                h=parseInt(h,10)*(hP/100);
-                            }
-                            dSett.height=Math.min(h,hP);
-                        }
-                    }
-                    url.dialog(dSett);
+                    $dialogContent.dialog(dSett);
                 }
-                else alert('jqueryUI required!');
+                else{
+                    const $d = $('<dialog class="japlus"/>');
+                    if(options.dialogCloseIcon!==false) $d.append('<a class="close">'+options.dialogCloseIcon+'</a>');
+                    $d.append($dialogContent.show()).appendTo('body');
+                    const d = $d.get(0);
+                    if(typeof dSett.height !== 'number') dSett.height = $d.height();
+                    else{
+                        dSett.height -= parseInt($d.css('padding-top'));
+                        dSett.height -= parseInt($d.css('padding-bottom'));
+                        dSett.height -= parseInt($d.css('border-top-width'));
+                        dSett.height -= parseInt($d.css('border-bottom-width'));
+                        dSett.height -= 10; //correction
+                    }
+                    if(typeof dSett.width !== 'number') dSett.width = $d.width();
+                    else{
+                        dSett.width -= parseInt($d.css('padding-left'));
+                        dSett.width -= parseInt($d.css('padding-right'));
+                        dSett.width -= parseInt($d.css('border-left-width'));
+                        dSett.width -= parseInt($d.css('border-right-width'));
+                        dSett.width -= 10; //correction
+                    }
+                    $d.css({width:dSett.width,height:dSett.height});
+                    
+                    if(dSett.l && dSett.t){ 
+                        $d.css({top:$(window).scrollTop()+dSett.t,left:$(window).scrollLeft()+dSett.l,margin:0});
+                    }
+                    else if(!dSett.modal){
+                        $d.css({top:$(window).scrollTop()+($(window).height()-dSett.height)/2-4});
+                    }
+                    if($dialogContent.is('iframe')){
+                        $dialogContent.width(dSett.width);
+                        $dialogContent.height(dSett.height);
+                    }
+                    if(options.dialogCloseIcon!==false){
+                        let sp = (!dSett.full && !dSett.modal && dSett.width+50<$(document).width()) ? '-1' : '';
+                        $d.children('a.close').css({position:'absolute',cursor:'pointer',top:0,right:sp+'5px'}).click(function(){d.close();});
+                    }
+                    (dSett.modal) ? d.showModal() : d.show();
+                    a.trigger("dialogShow.aplus");
+                }
                 return false;
             }
             else if(a.hasClass(x+'win')){
@@ -324,7 +402,11 @@
                 });
                 return false;
             }
-            else if(!IsAnchor(url)){
+            else if(a.hasClass(x+'slide') && IsAnchor(url)){
+                $(url).slideToggle('fast');
+                return false;
+            }
+            else{
                 var target=null;
                 if(a.hasClass(x+'blank')) target='_blank';
                 else if(a.hasClass(x+'parent')) target='_parent';
@@ -333,7 +415,7 @@
                 if(target){
                     window.open(url,target);
                     return false;
-                } 
+                }
             }
         }
     };
