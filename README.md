@@ -19,7 +19,7 @@ Changelog
 
 **0.9.0** (cooming soon)
 
-* jA+ can now create "dialog" also using HTML5 &lt;dialog&gt tag (using same classes of jQueryUI dialog)
+* jA+ can now create "dialog" also using HTML5 &lt;dialog&gt; tag (using same classes of jQueryUI dialog)
 * Add: class **confirm-ui**
 * Add: class **confirm-html5**
 * Add: class **slide**
