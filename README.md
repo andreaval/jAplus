@@ -19,6 +19,14 @@ Changelog
 
 **0.9.0** (cooming soon)
 
+* jA+ can now create "dialog" also using HTML5 &lt;dialog&gt tag (using same classes of jQueryUI dialog)
+* Add: class **confirm-ui**
+* Add: class **confirm-html5**
+* Add: class **slide**
+* Add: option **dialogType**
+* Add: option **dialogCloseIcon**
+* Mod: dialog.dialogClass has new default value: 'aplus-dialog'
+* Mod: ajax.loadMsg has new default value: empty string
 
 **0.8.4** (2014-09-04)
 
