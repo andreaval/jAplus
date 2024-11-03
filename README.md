@@ -26,7 +26,8 @@ Changelog
 * Add: option **dialogType**
 * Add: option **dialogCloseIcon**
 * Mod: dialog.dialogClass has new default value: 'aplus-dialog'
-* Mod: ajax.loadMsg has new default value: empty string
+* Mod: ajax.loadMsg has new default value: 'loading...'
+* Mod: control to avoid duplicated instance of jAplus in same object
 
 **0.8.4** (2014-09-04)
 
@@ -144,3 +145,7 @@ Changelog
 
 **0.1.0** (2012-06-05)
 First version
+
+TO-DO
+-----
++ slide-ajax class
