@@ -2,8 +2,8 @@
 
 A jQuery plugin to improve HTML &lt;A&gt; tag.
 
-It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
-The script syntax is compatible with all HTML / XHTML standards.
+It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML/XHTML standards.
+
 Is JavaScript disabled? No problem, the links will continue to work in the traditional way!
 
 ## Some basic examples
