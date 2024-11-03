@@ -1,25 +1,40 @@
-jQuery A+
-=========
+# jQuery A+
 
 A jQuery plugin to improve HTML &lt;A&gt; tag.
 
 It is an unobtrusive script that adds useful features to 'A' tags allowing webpages to maintain compatibility with HTML standards.
 The script syntax is compatible with all HTML / XHTML standards.
-
-**For example, you can open link in a new window/tab (like target="_blank") without invalidating the HTML code.**
-
 Is JavaScript disabled? No problem, the links will continue to work in the traditional way!
 
-Demos 
------------------------
+## Some basic examples
+
+Ask for confirmation before opening a link
+```html
+<a href="demo/ok21.htm" class="confirm">Click Me</a>
+```
+Retrieve the URL content via ajax and display it in a dialog
+```html
+<a href="demo/ok21.htm" class="dialog-ajax" >Click Me</a>
+```
+Open a popup centered window
+```html
+<a href="demo/ok31.htm" class="win-center">Click Me</a>
+```
+Open link in a new window/tab
+```html
+<a href="demo/ok11.htm" class="blank">Click Me</a>
+```
+
+## Complet examples  list
 https://japlus.vallorani.org/demo.html
 
-Changelog
----------
+## Changelog
 
 **0.9.0** (cooming soon)
 
 * jA+ can now create "dialog" also using HTML5 &lt;dialog&gt; tag (using same classes of jQueryUI dialog)
+* jQuery 3.7+ full compatibility
+* Added control to avoid duplicated instance of jAplus in same object
 * Add: class **confirm-ui**
 * Add: class **confirm-html5**
 * Add: class **slide**
@@ -27,7 +42,6 @@ Changelog
 * Add: option **dialogCloseIcon**
 * Mod: dialog.dialogClass has new default value: 'aplus-dialog'
 * Mod: ajax.loadMsg has new default value: 'loading...'
-* Mod: control to avoid duplicated instance of jAplus in same object
 
 **0.8.4** (2014-09-04)
 
@@ -146,6 +160,5 @@ Changelog
 **0.1.0** (2012-06-05)
 First version
 
-TO-DO
------
-+ slide-ajax class
+## TO-DO
+- [ ] slide-ajax class
