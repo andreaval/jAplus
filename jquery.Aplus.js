@@ -1,7 +1,7 @@
 /*!
  * JQuery A+
- * Version 0.9.0b4
- * @requires jQuery >= 1.5
+ * Version 0.9.0rc1
+ * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
  * Copyright (c) 2012-2024 Andrea Vallorani
@@ -40,21 +40,24 @@
             disabledMsg: 'alert',
             scroll: {speed:300,offsetY:0},
             notify: {life:10,type:null},
-            dialog: {dialogClass:'japlus'},
+            dialog: {dialogClass:'japlus',width:300,height:150},
             dialogType: 'html5',
             dialogCloseIcon: 'X',
-            ajax: {loadMsg:'...'}
+            ajax: {loadMsg:'loading ...'}
         },options);
         var x=options.prefix;
         this.each(function(){
             var $this = $(this);
             if(!$this.is('a')){
-                $this.delegate('a[class]','click',parser);
-                $this.delegate('a[class]','mouseenter',HideTitle);
+                $this.off('click.japlus','a[class]',parser);
+                $this.off('mouseenter.japlus','a[class]',HideTitle);
+                $this.on('click.japlus','a[class]',parser);
+                $this.on('mouseenter.japlus','a[class]',HideTitle);
             }
             else if($this.is('[class]')){
                 HideTitle(this);
-                $this.click(parser);
+                $this.off('click.japlus');
+                $this.on('click.japlus',parser);
             }
         });
         function parser(e){
@@ -71,7 +74,7 @@
             var url=a.attr('href');
             var confirmed=a.data('confirmed');
             if(confirmed) a.data('confirmed',false);
-            else if(a.hasClass(x+'confirm')){
+            else if(a.classContains(x+'confirm')){
                 var msg=options.confirm;
                 var mask=a.classPre(x+'confirm-mask');
                 if(!mask){
@@ -93,7 +96,7 @@
 
                 if(options.confirmType!==false){
                     switch(options.confirmType){
-                        case 'dialog':
+                        case 'ui':
                             if(!jQuery.ui){
                                 console.error("Unable to open confirm dialog. jQueryUI library not present!");
                                 return false;
@@ -105,9 +108,9 @@
                                 buttons:{
                                     Ok:function(){
                                         if($(this).children('form').length===0){
-                                            a.data('confirmed',true).click();
+                                            a.data('confirmed',true).trigger('click');
                                         }
-                                        else $(this).children('form').submit();
+                                        else $(this).children('form').trigger('submit');
                                         $(this).dialog("close");
                                     },
                                     Cancel:function(){
@@ -117,13 +120,13 @@
                             });
                         break;
                         case 'html5':
-                            var $d = $("<dialog/>").html('<p>'+msg+'</p><form method="dialog"></form>').appendTo('body');
+                            var $d = $('<dialog class="'+options.dialog.dialogClass+'"/>').html('<p>'+msg+'</p><form method="dialog"></form>').appendTo('body');
                             var $f = $d.children('form').eq(0);
-                            $('<button value="ok">Confirm</button>').click(function(){
-                                a.data('confirmed',true).click();
+                            $('<button value="ok">Confirm</button>').on('click',function(){
+                                a.data('confirmed',true).trigger('click');
                                 $d.remove();
                             }).appendTo($f);
-                            $('<button class="no">Cancel</button>').click(function(){
+                            $('<button class="no">Cancel</button>').on('click',function(){
                                 $d.remove();
                             }).appendTo($f);
                             $d.get(0).showModal();
@@ -131,14 +134,14 @@
                         default:
                             if(typeof options.confirmType==='function'){
                                 options.confirmType(a,msg,function(){
-                                    if($(mask+' form').length) $('form',this).submit();
-                                     else a.data('confirmed',true).click();
+                                    if($(mask+' form').length) $('form',this).trigger('submit');
+                                     else a.data('confirmed',true).trigger('click');
                                 });
                             }
                     }
                 }
                 else if(confirm(msg)){
-                    a.unbind('click',parser).click(parser).data('confirmed',true);
+                    a.off('click.japlus',parser).on('click.japlus',parser).data('confirmed',true);
                     return (a.triggerHandler('click')) ? true : false;
                 }
                 return false;
@@ -197,19 +200,23 @@
                 }
                 return false;
             }
-            else if(a.hasClass(x+'dialog')){
+            else if(a.classContains(x+'dialog')){
                 var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
                 var frame=null;
                 var $dialogContent;
+                if(typeof(a.attr('id'))==='undefined') a.attr('id',x+(Math.random() + 1).toString(36).substring(7));
                 if(!IsAnchor(url)){
                     if(a.hasClass(x+'dialog-ajax')){
-                        let rId = (Math.random() + 1).toString(36).substring(7);
-                        frame=$('<div id="'+rId+'" hidden></div>').appendTo('body');
-                        frame.load(url,function(){
-                            a.attr('href','#'+rId).removeClass('dialog-ajax').click();
+                        let rId = 'c_'+a.attr('id');
+                        frame=$('<div id="'+rId+'" class="load">'+options.ajax.loadMsg+'</div>').appendTo('body');
+                        $.ajax({url:url,dataType:'html'}).done(function(data){
+                            frame.html(data).removeClass('load');
+                            a.attr('href','#'+rId).trigger("ajaxComplete.aplus",{response:data});
                             return false;
+                        }).fail(function(tS,eT){
+                            frame.html(tS);
+                            a.trigger("ajaxError.aplus",{textStatus:tS,errorThrown:eT});
                         });
-                        return false;
                     }
                     else{
                         frame=$('<iframe src="'+url+'" style="padding:0;"></iframe>');
@@ -269,10 +276,14 @@
                     $dialogContent.dialog(dSett);
                 }
                 else{
-                    const $d = $('<dialog class="japlus"/>');
-                    if(options.dialogCloseIcon!==false) $d.append('<a class="close">'+options.dialogCloseIcon+'</a>');
-                    $d.append($dialogContent.show()).appendTo('body');
-                    const d = $d.get(0);
+                    let $d = $('dialog.'+a.attr('id')).eq(0);
+                    if($d.length===0){
+                        $d = $('<dialog class="'+options.dialog.dialogClass+' '+a.attr('id')+'"/>');
+                        if(options.dialogCloseIcon!==false) $d.append('<a class="close">'+options.dialogCloseIcon+'</a>');
+                        $d.append($dialogContent).appendTo('body');
+                    }
+                    $dialogContent.show();
+                    let d = $d.get(0);
                     if(typeof dSett.height !== 'number') dSett.height = $d.height();
                     else{
                         dSett.height -= parseInt($d.css('padding-top'));
@@ -303,14 +314,14 @@
                     }
                     if(options.dialogCloseIcon!==false){
                         let sp = (!dSett.full && !dSett.modal && dSett.width+50<$(document).width()) ? '-1' : '';
-                        $d.children('a.close').css({position:'absolute',cursor:'pointer',top:0,right:sp+'5px'}).click(function(){d.close();});
+                        $d.children('a.close').css({position:'absolute',cursor:'pointer',top:0,right:sp+'5px'}).on('click',function(){d.close();});
                     }
                     (dSett.modal) ? d.showModal() : d.show();
                     a.trigger("dialogShow.aplus");
                 }
                 return false;
             }
-            else if(a.hasClass(x+'win')){
+            else if(a.classContains(x+'win')){
                 e.preventDefault();
                 if(!a.data('win-id')){
                     a.data('win-id','win_'+((a.is('[id]')) ? a.attr('id') : new Date().getTime()));
@@ -365,7 +376,7 @@
                 if(myWin.location.href==='about:blank'){
                     myWin.location.href = url;
                 }
-                myWin.focus();
+                myWin.trigger('focus');
                 $(myWin.document).ready(function(){
                     if(aSett.check) a.removeClass(x+'disabled');
                 });
@@ -441,5 +452,8 @@
             } 
         });
         return value;
+    };
+    $.fn.classContains = function(val){
+        return $(this).is('[class|="'+val+'"],[class^="'+val+' "],[class*=" '+val+' "],[class*=" '+val+'-"],[class$=" '+val+'"]');
     };
 }));
