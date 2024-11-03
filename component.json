@@ -2,12 +2,12 @@
   "name": "jAplus",
   "title": "jQuery A+",
   "description": "jQuery A+ is an unobtrusive script that adds useful features to A tag allowing webpages to maintain compatibility with HTML standards. The script syntax is compatible with all HTML / XHTML standards. For example, you can open link in a new window/tab (like target=_blank) without invalidating the HTML code.",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "main": "./jquery.Aplus.js",
   "dependencies": {
-    "jquery": ">= 1.5.0"
+    "jquery": ">= 1.7.0"
   },
-  "homepage": "http://japlus.simplit.it",
+  "homepage": "https://japlus.vallorani.org",
   "author": {
       "name" : "Andrea Vallorani",
       "email" : "andrea.vallorani@gmail.com"
