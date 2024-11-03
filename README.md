@@ -30,7 +30,7 @@ https://japlus.vallorani.org/demo.html
 
 ## Changelog
 
-**0.9.0** (cooming soon)
+**0.9.0** (2024-11-03)
 
 * jA+ can now create "dialog" also using HTML5 &lt;dialog&gt; tag (using same classes of jQueryUI dialog)
 * jQuery 3.7+ full compatibility
