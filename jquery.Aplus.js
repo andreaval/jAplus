@@ -1,10 +1,10 @@
 /*!
  * JQuery A+
- * Version 0.9.0
+ * Version 0.10.0b1
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
- * Copyright (c) 2012-2024 Andrea Vallorani
+ * Copyright (c) 2012-2026 Andrea Vallorani
  * Released under the MIT license
  */
 (function (factory) {
@@ -19,10 +19,11 @@
     /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, browser:true, devel:true, jquery:true, indent:4*/
     $.fn.Aplus = function(options){
         var IsAnchor = function(url){
-            return (url && url.toString().charAt(0)==='#') ? true : false;
+            if(!url) return false;
+            return /^#[A-Za-z0-9_\-]+$/.test(url);
         };
         var HideTitle = function(el){
-            el=$(el.target);
+            el=$(el.target || el);
             if(el.is('[title]') && el.is('.'+x+'confirm,.'+x+'dialog,.'+x+'disabled')){
                 el.data('title',el.attr('title')).removeAttr('title');
             }
@@ -72,6 +73,16 @@
             }
             if(!a.is('[href]')) return;
             var url=a.attr('href');
+            if(a.hasClass(x+'copy') && IsAnchor(url)){
+                if (typeof (navigator.clipboard) !== 'undefined'){
+                    navigator.clipboard.writeText($(url).text());
+                    a.addClass('copied');
+                    setTimeout(function(){
+                      a.removeClass("copied");
+                    },1000);
+                }
+                return false;
+            }
             var confirmed=a.data('confirmed');
             if(confirmed) a.data('confirmed',false);
             else if(a.classContains(x+'confirm')){
