@@ -1,6 +1,6 @@
 /*!
  * JQuery A+
- * Version 0.10.0b1
+ * Version 0.10.0b2
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
@@ -68,18 +68,17 @@
                 return false;
             }
             if(a.hasClass(x+'print')){
-                window.setTimeout(window.print,0);
+                setTimeout(function(){ window.print(); },0);
                 return false;
             }
             if(!a.is('[href]')) return;
             var url=a.attr('href');
             if(a.hasClass(x+'copy') && IsAnchor(url)){
-                if (typeof (navigator.clipboard) !== 'undefined'){
-                    navigator.clipboard.writeText($(url).text());
-                    a.addClass('copied');
-                    setTimeout(function(){
-                      a.removeClass("copied");
-                    },1000);
+                if (navigator.clipboard){
+                    navigator.clipboard.writeText($(url).text()).then(function() {
+                        a.addClass('copied');
+                        setTimeout(function(){ a.removeClass("copied"); }, 1000);
+                    });
                 }
                 return false;
             }
@@ -442,15 +441,14 @@
         }
     };
     $.fn.classPre = function(prefix,all){
-        var classes=this.attr('class').split(' ');
         prefix+='-';
-        var l=prefix.toString().length;
+        var l=prefix.length;
         var value=(all) ? {} : false;
-        $.each(classes,function(i,v){
-            if(v.slice(0,l)===prefix){
+        this[0].classList.forEach(function(v){
+            if(v.startsWith(prefix)){
                 if(all){
                     var t = v.slice(l).split('-',2);
-                    if(typeof t[1]==='undefined' || t[1]===null) t[1]=1;
+                    if(t[1]===undefined || t[1]==='') t[1]=1;
                     else if(!isNaN(t[1])) t[1]=parseInt(t[1],10);
                     else if(t[1]==='true') t[1]=true;
                     else if(t[1]==='false') t[1]=false;
@@ -458,7 +456,6 @@
                 } 
                 else{
                     value = v.slice(l);
-                    return;
                 }
             } 
         });
