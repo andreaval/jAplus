@@ -1,6 +1,6 @@
 /*!
  * JQuery A+
- * Version 0.10.0b2
+ * Version 0.10.0b3
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
@@ -364,17 +364,12 @@
                     aSett.width=Math.min(winW,wPage);
                     aSett.height=Math.min(winH,hPage);
                     if(aSett.center){
-                        var screenX, screenY;
-                        if(navigator.userAgent.match(/msie/i)){
-                            screenX=window.screenLeft;
-                            screenY=window.screenTop;
+                        if(!window.screenLeft){
+                            window.screenLeft = window.screenX;
+                            window.screenTop = window.screenY;
                         }
-                        else{
-                            screenX=window.screenX;
-                            screenY=window.screenY;
-                        }
-                        aSett.left = (wPage/2)-(aSett.width/2)+screenX;
-                        aSett.top = (hPage/2)-(aSett.height/2)+screenY;
+                        aSett.left = (wPage/2)-(aSett.width/2)+window.screenLeft;
+                        aSett.top = (hPage/2)-(aSett.height/2)+window.screenTop;
                         delete aSett.center;
                     }
                 }
@@ -383,13 +378,9 @@
                 });
                 wSett=wSett.substr(1);
                 var myWin=window.open('',winID,wSett);
-                if(myWin.location.href==='about:blank'){
+                if(myWin.location.href==='about:blank')
                     myWin.location.href = url;
-                }
-                myWin.trigger('focus');
-                $(myWin.document).ready(function(){
-                    if(aSett.check) a.removeClass(x+'disabled');
-                });
+                if(aSett.check) a.removeClass(x+'disabled');
                 return false;
             }
             else if(a.hasClass(x+'scroll')){
