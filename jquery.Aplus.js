@@ -1,6 +1,6 @@
 /*!
  * JQuery A+
- * Version 0.10.0b3
+ * Version 0.10.0rc1
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
@@ -40,7 +40,7 @@
             confirmType: false,
             disabledMsg: 'alert',
             scroll: {speed:300,offsetY:0},
-            notify: {life:10,type:null},
+            notify: {life:3,type:null,width:300,height:'auto',bg:'0003',top:10,right:10},
             dialog: {dialogClass:'japlus',width:300,height:150},
             dialogType: 'html5',
             dialogCloseIcon: 'X',
@@ -212,7 +212,7 @@
             }
             else if(a.classContains(x+'dialog')){
                 var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
-                var frame=null;
+                var frame;
                 var $dialogContent;
                 if(typeof(a.attr('id'))==='undefined') a.attr('id',x+(Math.random() + 1).toString(36).substring(7));
                 if(!IsAnchor(url)){
@@ -389,29 +389,33 @@
                 $('html,body').animate({scrollTop:$(url).offset().top+scroll.offsetY},scroll.speed);
                 return false;
             }
-            else if(a.hasClass(x+'notify')){
-                if(IsAnchor(url)) return false;
-                $.get(url,function(response){
-                    var nSett=$.extend({},options.notify,a.classPre(x+'notify',1));
-                    switch(nSett.type){
-                    case 'jGrowl':
-                        if($.jGrowl){
-                            var conf={};
-                            if(nSett.life) conf.life=nSett.life*1000;
-                            else conf.sticky=true;
-                            $.jGrowl(response,conf);
+            else if(a.classContains(x+'notify')){
+                if(!IsAnchor(url)){
+                    $.get(url,function(data){
+                        var conf=$.extend({},options.notify,a.classPre(x+'notify',1));
+                        if(conf.type==='dialog' || a.hasClass(x+'notify-dialog')){
+                            var $d=$('<dialog class="'+x+'notify"/>')
+                                .css({width:conf.width,
+                                      height:conf.height,
+                                      position:'fixed',
+                                      top:conf.top+'px',
+                                      left:'auto',
+                                      right:conf.right+'px',
+                                      background:'#'+conf.bg,
+                                      borderRadius:'1em'})
+                                .append(data).appendTo('body');
+                            $d.get(0).show();
+                            setTimeout(function(){
+                                $d.fadeOut('fast').remove();
+                            },conf.life*1000);
                         }
-                        break;
-                    case 'growlUI':
-                        if($.growlUI){
-                            var life = (nSett.life) ? nSett.life*1000 : undefined;
-                            $.growlUI('',response,life);
-                        }
-                        break;
-                    default: 
-                        alert(response);
-                    }
-                });
+                        else alert(data);
+                    }).done(function(data) {
+                        a.trigger("ajaxComplete.aplus",{response:data});
+                    }).fail(function(t,e){
+                        a.trigger("ajaxError.aplus",{textStatus:t,errorThrown:e});
+                    });
+                }
                 return false;
             }
             else if(a.hasClass(x+'slide') && IsAnchor(url)){
