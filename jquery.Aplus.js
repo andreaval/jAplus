@@ -1,6 +1,6 @@
 /*!
  * JQuery A+
- * Version 0.10.0rc1
+ * Version 0.10.0
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
