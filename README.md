@@ -39,7 +39,7 @@ https://japlus.vallorani.org/demo.html
 * Mod: removed blockUI dependency in class **notify**
 * Mod: improved class **win**
 * Mod: improved class **print**
-* Mod: speed up classPre()
+* Mod: improved speed in classPre()
 * Fix: IsAnchor()
 * Fix: HideTitle()
 
