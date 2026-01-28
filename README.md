@@ -30,6 +30,19 @@ https://japlus.vallorani.org/demo.html
 
 ## Changelog
 
+**0.10.0** (2026-01-28)
+
+* jQuery 4.0+ full compatibility
+* Add: class **copy**
+* Add: class **notify-dialog**
+* Add: options in notify: **width**,**height**,**top**,**right**,**bg**
+* Mod: removed blockUI dependency in class **notify**
+* Mod: improved class **win**
+* Mod: improved class **print**
+* Mod: speed up classPre()
+* Fix: IsAnchor()
+* Fix: HideTitle()
+
 **0.9.0** (2024-11-03)
 
 * jA+ can now create "dialog" also using HTML5 &lt;dialog&gt; tag (using same classes of jQueryUI dialog)
