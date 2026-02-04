@@ -1,6 +1,6 @@
 /*!
  * JQuery A+
- * Version 0.10.0
+ * Version 0.11.0b1
  * @requires jQuery >= 1.7
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  *
@@ -156,27 +156,25 @@
                 }
                 return false;
             }
-            if(a.hasClass(x+'ajax')){
+            if(a.classContains(x+'ajax')){
                 var ajaxSett=$.extend({},options.ajax,a.classPre(x+'ajax',1));
                 if(typeof(ajaxSett.to)!=='undefined' && ajaxSett.to){
-                    if(typeof(a.attr('id'))==='undefined') a.attr('id',(new Date()).getTime());
-                    var aId = a.attr('id');
+                    if(!a.is('[id][id!=""]')) a.attr('id',(new Date()).getTime());
+                    const aId = a.attr('id');
                     ajaxSett.to = '#'+ajaxSett.to;
                     ajaxSett.from = (typeof(ajaxSett.from)==='undefined' || !ajaxSett.from) ? null : '#'+ajaxSett.from;
                     var to=$(ajaxSett.to);
                     var localCache=to.children('div[data-rel="'+aId+'"]');
-                    var toH=to.height();
-                    var lastVis = to.children(':visible');
-                    to.children().hide();
+                    var lastVis=to.children(':visible');
+                    to.children('[data-rel!="'+aId+'"]').hide();
                     if(localCache.length){
-                        localCache.show();
+                        if(a.hasClass(x+'toggle')) localCache.toggle();
+                        else localCache.show();
                         to.trigger("ajaxToComplete.aplus",{obj:localCache});
                     }
                     else{
                         var container=$('<div data-rel="'+aId+'" />');
-                        container.html('<div hidden class="'+x+'loader">'+ajaxSett.loadMsg+'</div>').appendTo(to);
-                        if(a.hasClass(x+'slide')) container.slideDown('fast');
-                        else container.show();
+                        container.html('<div class="'+x+'loader">'+ajaxSett.loadMsg+'</div>').appendTo(to);
                         $.ajax({url:url,dataType:'html'}).done(function(data){
                             data = $('<div>'+data.replace(/^[\s\S]*<body.*?>|<\/body>[\s\S]*$/g, '')+'</div>');
                             if(ajaxSett.from){
@@ -210,11 +208,11 @@
                 }
                 return false;
             }
-            else if(a.classContains(x+'dialog')){
+            if(a.classContains(x+'dialog')){
                 var dSett=$.extend({},options.dialog,a.classPre(x+'dialog',1));
                 var frame;
                 var $dialogContent;
-                if(typeof(a.attr('id'))==='undefined') a.attr('id',x+(Math.random() + 1).toString(36).substring(7));
+                if(!a.is('[id][id!=""]')) a.attr('id',x+(Math.random()+1).toString(36).substring(7));
                 if(!IsAnchor(url)){
                     if(a.hasClass(x+'dialog-ajax')){
                         let rId = 'c_'+a.attr('id');
@@ -331,7 +329,7 @@
                 }
                 return false;
             }
-            else if(a.classContains(x+'win')){
+            if(a.classContains(x+'win')){
                 e.preventDefault();
                 if(!a.data('win-id')){
                     a.data('win-id','win_'+((a.is('[id]')) ? a.attr('id') : new Date().getTime()));
@@ -383,13 +381,13 @@
                 if(aSett.check) a.removeClass(x+'disabled');
                 return false;
             }
-            else if(a.hasClass(x+'scroll')){
+            if(a.hasClass(x+'scroll')){
                 if(!IsAnchor(url)) return true;
                 var scroll=$.extend({},options.scroll,a.classPre(x+'scroll',1));
                 $('html,body').animate({scrollTop:$(url).offset().top+scroll.offsetY},scroll.speed);
                 return false;
             }
-            else if(a.classContains(x+'notify')){
+            if(a.classContains(x+'notify')){
                 if(!IsAnchor(url)){
                     $.get(url,function(data){
                         var conf=$.extend({},options.notify,a.classPre(x+'notify',1));
@@ -418,20 +416,24 @@
                 }
                 return false;
             }
-            else if(a.hasClass(x+'slide') && IsAnchor(url)){
+            if(a.classContains(x+'slide') && IsAnchor(url)){
+                if(a.hasClass(x+'slide-class')) url = '.'+url.slice(1);
                 $(url).slideToggle('fast');
                 return false;
             }
-            else{
-                var target=null;
-                if(a.hasClass(x+'blank')) target='_blank';
-                else if(a.hasClass(x+'parent')) target='_parent';
-                else if(a.classPre(x+'frame')) target=a.classPre(x+'frame');
-                else if(a.hasClass(x+'self') || confirmed) target='_self';
-                if(target){
-                    window.open(url,target);
-                    return false;
-                }
+            if(a.classContains(x+'toggle') && IsAnchor(url)){
+                if(a.hasClass(x+'toggle-class')) url = '.'+url.slice(1);
+                $(url).toggle();
+                return false;
+            }
+            let target=null;
+            if(a.hasClass(x+'blank')) target='_blank';
+            else if(a.hasClass(x+'parent')) target='_parent';
+            else if(a.classPre(x+'frame')) target=a.classPre(x+'frame');
+            else if(a.hasClass(x+'self') || confirmed) target='_self';
+            if(target){
+                window.open(url,target);
+                return false;
             }
         }
     };
