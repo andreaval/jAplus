@@ -87,11 +87,9 @@
             else if(a.classContains(x+'confirm')){
                 var msg=options.confirm;
                 var mask=a.classPre(x+'confirm-mask');
-                if(!mask){
-                    if(IsAnchor(url)) mask=url;
-                    else if(IsAnchor(GetTitle(a))) mask=GetTitle(a);
-                }
-                else mask='#'+mask;
+                if(mask && IsAnchor('#'+mask)) mask='#'+mask;
+                else if(IsAnchor(url)) mask=url;
+                else if(IsAnchor(GetTitle(a))) mask=GetTitle(a);
                 if(mask && $(mask).length){
                     msg=$(mask).html();
                     if(GetTitle(a)){
